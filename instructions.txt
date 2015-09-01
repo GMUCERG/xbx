@@ -1,3 +1,50 @@
-cd xbx
-edit config.ini to select desired platform and algorithms
+Run setup.sh
+
+# In xbh
+
+## Build
+make
+
+## Install onto XBH 
+
+Make sure tiva-c xbd is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
+Ensure .gdbinit is loaded
+
+arm-tiva_c-gdb
+> load
+
+
+
+# In xbs_xbd
+
+## Tiva-C platform bootloader setup
+
+### Make bootloader
+cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles
+make
+
+### Install
+Make sure tiva-c xbh is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
+Ensure .gdbinit is loaded
+
+arm-tiva_c-gdb
+> load
+
+
+
+
+## Import algopacks
 ./import_algopack external/supercop
+
+## Configure
+edit config.ini to select desired platform and algorithms
+
+## Compile
+./compile.py
+
+## Execute
+
+./execute.py
+
+
+## Analyze data using ipython notebook or sqlitebrowser
