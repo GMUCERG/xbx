@@ -1,0 +1,6 @@
+[submodule "xbs_xbd"]
+	path = xbs_xbd
+	url = https://github.com/jhnphm/xbs_xbd.git
+[submodule "xbh"]
+	path = xbh
+	url = https://github.com/jhnphm/xbh.git
