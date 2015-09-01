@@ -1,0 +1,3 @@
+cd xbx
+edit config.ini to select desired platform and algorithms
+./import_algopack external/supercop
