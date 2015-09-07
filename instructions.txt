@@ -5,6 +5,9 @@ Run setup.sh
 ## Build
 make
 
+## Setup path 
+source env.sh
+
 ## Install onto XBH 
 
 Make sure tiva-c xbd is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
