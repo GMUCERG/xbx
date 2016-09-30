@@ -19,7 +19,7 @@ pushd xbs_xbd
 git submodule init
 popd
 
-git submodule update --recursive --remote
+git submodule update --init --recursive
 
 pushd $XBX_WORKDIR/tools
 git clone https://github.com/crosstool-ng/crosstool-ng.git -b crosstool-ng-1.21.0
