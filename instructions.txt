@@ -17,13 +17,10 @@ vi .bashrc
 #add to .bashrc: export PATH=~/.opt/xbx/bin:~/.opt/xbx/arm-tiva_c-eabi/bin:$PATH
 source .bashrc
 
-
 # In xbh
 
 ## Build in xbh
 make
-
-## Install onto XBH 
 
 ## add dailout to groups
 sudo -s
@@ -71,8 +68,6 @@ sudo apt-get install lm4flash
 (gdb) c
 
 
-
-
 ## Import algopacks in xbs_xbd
 cd xbs_xbd/
 ./import_algopack external/supercop
@@ -89,7 +84,6 @@ cd xbs_xbd$   python/xbx/dirchecksum.py algobase/crypto_core/aes128encrypt/
 ## Execute
 
 ./execute.py
-
 
 ## Analyze data using ipython notebook or sqlitebrowser
 #install ipython/notebook
