@@ -8,11 +8,15 @@ git clone https://github.com/GMUCERG/xbx
 sudo apt-get install libtool-bin
 sudo apt-get install gcc-arm-none-eabi
 
-## run setup script
+## run setup script :  Don't run on root.
 ./setup.sh
 
 ## Setup path in xbx
-source env.sh
+cd
+vi .bashrc
+#add to .bashrc: export PATH=~/.opt/xbx/bin:~/.opt/xbx/arm-tiva_c-eabi/bin:$PATH
+source .bashrc
+
 
 # In xbh
 
