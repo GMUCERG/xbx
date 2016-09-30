@@ -60,8 +60,6 @@ sudo apt-get install lm4flash
 ### Install
 ## Make sure tiva-c xbh is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
 ## Ensure .gdbinit is loaded
-cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles/
-make
 > arm-tiva_c-eabi-gdb
 (gbd) source .gdbinit
 (gdb) load
