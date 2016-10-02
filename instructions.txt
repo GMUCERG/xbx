@@ -75,7 +75,7 @@ make
 cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/
 ./flash_bootloader.sh
 
-## if lm4flash: not found; install lm4flash
+## if lm4flash: not found; install lm4flash and run ./flash_bootloader.sh again
 sudo apt-get install lm4flash
 
 ### Install
