@@ -55,12 +55,9 @@ udevadm settle
 udevadm control -R
 reboot
 
-### Make bootloader
-cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles
-make
-
 #Make sure tiva-c xbd is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
 #Ensure .gdbinit is loaded. Connect tiva-c xbh.
+cd  xbx/xbh
 arm-tiva_c-eabi-gdb
 (gbd) source .gdbinit
 (gdb) load
@@ -69,6 +66,10 @@ arm-tiva_c-eabi-gdb
 # In xbs_xbd
 
 ## Tiva-C platform bootloader setup
+
+### Make bootloader
+cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles
+make
 
 ##flash bootloader
 cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/
