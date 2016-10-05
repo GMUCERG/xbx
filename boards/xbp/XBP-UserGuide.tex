@@ -4,21 +4,23 @@
 \usepackage{url}
 \begin{document}
 
-\title{XBP User Guide}
+\title{XXBX Power Shim-XBP User Guide}
 
 \maketitle
+
+\section{XBP Connections}
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=1]{figures/xbp-xbh}
-    \caption{Boosterpack Connector XBH as Viewed from Top}
+    \caption{Boosterpack Connector XBH as Viewed from Top of PCB}
   \end{center}
 \end{figure}
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=1]{figures/xbp-xbd}
-    \caption{Boosterpack Connector XBD as Viewed from Top}
+    \caption{Boosterpack Connector XBD as Viewed from Top of PCB}
   \end{center}
 \end{figure}
 \begin{table}[ht]
@@ -70,6 +72,35 @@
     \end{tabular}
   \end{center}
 \end{table}
+
+\section{XBX Devices under Test (XBD)}
+\subsection{TI Stellaris\textregistered~LM4F120 LaunchPad}
+
+Neither the Debug, nor the Device USB should be connected for power measurements.
+The \emph{+3.3V} line on pin J1.1 of the boosterpack connector is connected 
+directly to the In-Circuit Debugger. Therefore, it is recommended to select on the
+XBP to power the XBD via the external XBD connector and not via the boosterpack
+connector. On the TI Stellaris Launchpad, the VDD jumper has to be pulled and the
+external 3.3V has to be supplied to the right pin. The green power LED on the
+Launchpad lights up when the 3.3V are supplied to the left (wrong) pin. 
+The \emph{PWR Select} switch can be in any position and won't affect the 
+measurements.
+
+\subsection{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
+
+The circuit connections are the same as on the TI Stellaris LaunchPad. Please follow
+those instructions. Supply voltage is 3.3V with a maximum current of 300\,mA.
+
+\subsection{TI MSP430F5529 LaunchPad\texttrademark}
+
+For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. 
+
+\subsection{TI MSP430FR6989 LaunchPad\texttrademark}
+
+For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+current of 2.7\,mA not including LEDs or external circuitry.
 
 
 \end{document}
