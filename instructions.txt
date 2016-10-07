@@ -37,7 +37,7 @@ ifconfig
 #replace address in xbs_xbd/config.ini
 vi config.ini
 
-#create ip mapping in host file
+#create ip mapping from your DCHP in host file
 vi /etc/hosts
 # <ip address> xbh
 
@@ -63,16 +63,16 @@ arm-tiva_c-eabi-gdb
 
 ## Tiva-C platform bootloader setup
 
+### Make bootloader
+cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles
+make
+
 ##flash bootloader
 cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/
 sudo ./flash_bootloader.sh
 
 ## if lm4flash: not found; install lm4flash and run ./flash_bootloader.sh again
 sudo apt-get install lm4flash
-
-### Make bootloader
-cd xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles
-make
 
 ### Install
 ## Make sure tiva-c xbh is not plugged in, or edit openocd.cfg to fill in serial obtained from lsusb -v
