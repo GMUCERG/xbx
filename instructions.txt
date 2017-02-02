@@ -35,7 +35,12 @@ cat /dev/ttyACM0
 #get your router ip address for xbh
 ifconfig
 #replace address in xbs_xbd/config.ini
-vi config.ini
+#vi config.ini
+
+actually it is in
+xbh/xbh_config.h
+and its in hex hex hex
+
 
 #create ip mapping from your DCHP in host file
 vi /etc/hosts
