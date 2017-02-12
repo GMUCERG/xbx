@@ -11,10 +11,14 @@ XBH (tm4c1294)
 	*Execute Sig. -	PL4
 
 XBD (F5529)
-	*I2C -	P.2(SCL), P4.1(SDA)
+	*I2C -	P4.2(SCL), P4.1(SDA)
 	*Soft Reset -	P2.7
 	*Execute Sig. -	P2.0	(was P1.3)
 
+XBD (FR5994)
+	*I2C - P7.1(SCL), P7.0(SDA)
+	*Soft Reset -	P6.3
+	*Execute Sig. - P7.3		(P5.7)
 
 
 
@@ -197,7 +201,7 @@ Questions:
 	Where are the SQL commands in XBS??
 	Code for AEAD, hash,etc.. wrapper for XBD?
 	How does upload results ("urr") work?? are the cyc. measured by XBH used after each run or are the vars. just for calibration??
-		-In XBS output can see measured vals. after each run but not XBD cycles..
+		-In XBS output - can see measured vals. after each run but not XBD cycles..
 	
 
 
@@ -215,7 +219,7 @@ xbh/hal/measure.c	-	code for measuring time/power
 
 TO DO:
 	1) Fix timing
-		- 1sec. timing calibration (5x) (seen in both tm4c123 and f5529 logic analyser, so likely wraparound prob.) 
+		- 1sec. timing calibration (5x) 
 		- Difference between cycles and measured cycles?	-	cycles=XBD, and measured_cycles=XBH
 				-	cycles	-	value is measured by XBD  
 				-	measured cycles	-	value is calc. by XBS (using sec., frac, frac_per_sec)	
@@ -285,7 +289,7 @@ gtkterm
 		-"urr" -> XBH_HandleUploadResultsRequest() -> XBDsend"urr" -> (XBH<-XBD(ok)) -> XBDsend"rdr" -> (XBH<-XBD "multiple pkts")
 
 	  Problem:
-		Execution:	"exr" (->timer start by XBH) -> then _get_timings (-> "rpr"
+		Calibration cycles work but execution cycles doesn't work (t_stop is always 0, enters ISR only once)
 		
 ------------------------------------------------------------
 XBD Build process:
