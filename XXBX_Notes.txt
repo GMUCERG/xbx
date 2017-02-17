@@ -290,6 +290,13 @@ gtkterm
 
 	  Problem:
 		Calibration cycles work but execution cycles doesn't work (t_stop is always 0, enters ISR only once)
+			- This was because execution time was too small (for 0cipher, ~4 us) for XBH to capture whereas for cal., exec. pin was asserted for 1sec.
+			- Now WORKS
+			- 1ms - too small
+			- 3.4ms	- too small
+			- 6.15ms - works		--seems to be the limit
+			- 11.54ms - works
+			- 12.89ms - works
 		
 ------------------------------------------------------------
 XBD Build process:
