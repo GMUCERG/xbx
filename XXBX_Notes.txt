@@ -191,7 +191,7 @@ Timing:
 
 -----------------------------------------
 Questions:
-	Why repeat 3 times each for same algo with same params (53 bytes)?	- enc,dec,... (enc,dec,frg?)
+	Why repeat 3 times each for same algo with same params (53 bytes)?	- (enc,dec,frg?) and exec_runs=3 (config.ini)
 	Meaning of opcodes?	- xbh.c
 	output of ./execute, log of XBS? or xbh?	- mostly in XBH's prespective, but it is the filtered output by XBS. Since XBD->XBH data is relayed back to XBS, processed and stored (by XBS) the XBS prints these statements. 
 
@@ -214,7 +214,7 @@ xbh/hal/measure.c	-	code for measuring time/power
 		- Initial timing calibration code......	-	in XBD_BL.c -> XBD_HAL.c
 
 		-is timer being stopped???
-			- is cap_cnt ever == 1??	No
+			- is cap_cnt ever == 1??	No.	Now Works.
 
 
 TO DO:
@@ -303,9 +303,17 @@ XBD Build process:
 	
 	- /platforms 	-	contains HAL code and makefile to build bootloader for specific uC
 		- /setting.ini	-	XBD specific settings
-		- hal/XBD_DeviceDependant.h	-	
+		- hal/XBD_DeviceDependent.h	-	
 
 	- /embedded/xbd_{af/bl}	-	bootloader/ other non uC specific code (contains main())
+
+------------------------------------------------------------
+XBS Run:
+	- ./config.ini
+	- ./execute.py
+	
+	- /embedded/xbd_{app/op} -	used for compiling algorithms, app+op(aead,hash)+algorithm
+	- platforms/'XBD'/c_compilers -	used by XBS for choosing compiler/options for compiling algorithms
 
 	
 
@@ -314,9 +322,6 @@ XBD Build process:
 -----------------------------------------------------------
 SQL Database:
 
-
-
-wrong seconds from XBH
 
 
 
