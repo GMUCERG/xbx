@@ -1,6 +1,9 @@
 [submodule "xbs_xbd"]
-	path = xbs_xbd
-	url = https://github.com/GMUCERG/xbs_xbd.git
+        path = xbs_xbd
+        url = https://github.com/GMUCERG/xbs_xbd.git
 [submodule "xbh"]
-	path = xbh
-	url = https://github.com/GMUCERG/xbh.git
+        path = xbh
+        url = https://github.com/GMUCERG/xbh.git
+[submodule "SUPERCOP"]
+        path = SUPERCOP
+        url = https://github.com/GMUCERG/SUPERCOP.git
