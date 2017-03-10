@@ -1,0 +1,340 @@
+XBD (tm4c123)
+	*I2C -	PA6(SCL), PA7(SDA)
+	*Soft Reset -	PA5			1 - Active High
+	*Execute Sig. -	PC5??			0 - Start, 1 - Complete
+
+	
+
+XBH (tm4c1294)
+	*I2C -	PB2(SCL), PB3(SDA)
+	*Soft Reset -	PC7
+	*Execute Sig. -	PL4
+
+XBD (F5529)
+	*I2C -	P4.2(SCL), P4.1(SDA)
+	*Soft Reset -	P2.7
+	*Execute Sig. -	P2.0	(was P1.3)
+
+XBD (FR5994)
+	*I2C - P7.1(SCL), P7.0(SDA)
+	*Soft Reset -	P6.3
+	*Execute Sig. - P7.3		(P5.7)
+
+
+
+
+
+---------------------------------------------------------------------------------
+I2C (on tm4c123 running 0cipher with (M,AD): (1,0) (2,0) ):
+
+	- Keep alive
+	- ok
+	- Doing drift measurement
+	- Switching to bootloader mode
+	- ok
+
+	  ********************************
+	- Getting Timing Calibration
+	- ok 
+	- Received 16000023 XBD clock cycles
+	- Downloading timing results
+	- ok
+	- Receive 3399011919 109148788 120000000
+	- Abs Error #, Rel Err #, Cycles #, Measured Cycles #
+	  *******(Repeat 4x)**************
+
+	- Loading build (e.g 0ciper)
+	- Uploading 'X' bytes 1 page(s) at a time starting at 0x2800
+
+	  ***************************************************
+	- ok
+	- Uploading 1024 bytes starting at 0x2800
+	  *************(Repeat length of program)************
+
+	.......
+	......
+	.....
+	
+	  *****************************************************************
+	- Running benchmark on crypto_aead/0cipher/empty/0 with plaintext length 'N' and associated data length 'M'
+	- Uploading 73 bytes 1384 at a time
+	- Uploading 73 bytes starting at 0x0
+	- Switching to application mode
+	- ok
+	- Uploading parameters to address 0x0
+	- ok
+	- Executing code
+	- ok
+	- Downloading timing results
+	- ok
+	- Receive 3399011920 94145901 120000000
+	- Getting Stack Usage
+	- ok
+	- Used 11 bytes on stack
+	- Downloading results
+	- ok
+
+	 (why repeat 2 more times (with 53 bytes)???????  see below..)
+
+	- Uploading 53 bytes 1384 at a time
+	- Uploading 53 bytes starting at 0x0
+	- Uploading parameters to address 0x0
+	- ok
+	- Executing code
+	- ok
+	- Downloading timing results
+	- ok
+	- Receive 3399011920 94911648 120000000
+	- Getting Stack Usage
+	- ok
+	- Used 15 bytes on stack
+	- Downloading results
+	- ok
+	
+	  (repeats 1 more time with same stack usage but slightly different frac. timing)
+	
+	  ******(repeats for different algo, and (M,AD) pair)***************
+	
+-------------------------------------------
+I2C Comm: 
+	addr: 
+		Slave_ADDR = 0x75 (XBD_HAL.c), 0xEA/0xEB
+			- Why is there addr. 0xEA in logic analyser but can't find the addr. in code?	- Little/BIG endian (same addr.)
+
+	(/xbh/xbh_prot.h - I2C commands
+	 /xbh/xbh.c 	 - XBH handlers called from xbh_server.c (which manages XBS comm.) to debug/log I2C/xbs comm. and send/recv I2C comm.
+
+
+	xbdSend() 	-> i2c_comm_write() 	-> I2C_WRITE()
+	(xbh_xbdcomm.c	-> i2c_comm.c		-> measure.c)
+
+	opcodes (TM4C123, 0cipher with (M=1, Ad=0), ASCII):
+		'XBD04SBR'		-	Proper 's'tart 'b'ootloader 'r'equest received
+		'XBD04TCO'		-	't'iming 'c'alibration 'o'kay sent
+		'XBD04TCR'		-	Proper 't'iming 'c'alibration 'r'equest received
+		'XBD04TCO'
+		'XBD04TCR'
+		'XBD04TCO'
+		'XBD04TCR'
+		'XBD04TCO'
+		'XBD04TCR'
+		'XBD04TCO'
+		.....
+		..... (Lots of 0's)	-	algorithm sent?
+		.....
+		'XBD04EXO'		-	Handle 'ex'ecution 'o'kay sent
+		'XBD04SUR'		-	Sending 's'tack ('u'sage?) 'r'equest to XBD
+		'XBD04SUO'		-	's'tack 'u'sage 'o'kay received(/not recieved) from XBD
+		'XBD04URR'		-	Proper 'u'pload 'r'esults 'r'equest received
+		'XBD04URO'		-	'u'pload 'r'esults 'o'kay sent
+		.....
+		.....(0's)
+		.....
+		'XBD04RDR'		-	Sending 'r'esult 'd'ata 'r'equest to XBD
+		'XBD04RDO'		-	'r'esult 'd'ata 'r'equest ('o'kay recieved/sent?)
+		.....
+		.....(0's)
+		.....
+		'XBD04PPR'		-	Sending 'p'rogram 'p'arameters 'r'equest to XBD
+		'XBD04PPO'		-	Received 'p'rogram 'p'arameters 'o'kay from XBD
+		'XBD04PDR'		-	Sending 'p'rogram 'd'ownload 'r'equest to XBD
+		.....
+		.....(data)
+		.....
+		'XBD04PDO'		-	Received 'p'rogram 'd'ownload 'o'kay from XBD
+		'XBD04EXR'		-	Proper 'ex'ecution 'r'equest received
+		'XBD04EXO'		-	Handle 'ex'ecution 'o'kay sent
+		'XBD04SUR'		-	Proper 's'tack 'u'sage 'r'equest received
+		'XBD04SUO'		-	's'tack 'u'sage 'o'kay sent
+		'XBD04URR'		-	Sending 'u'pload 'r'esults 'r'equest to XBD
+		'XBD04URO'		-	Received 'u'pload 'r'esults 'o'kay from XBD
+		.....
+		.....(data)
+		.....
+		'XBD04RDR'		-	Sending 'r'esult 'd'ata 'r'equest to XBD
+		'XBD04RDO'		-	'r'esult 'd'ata 'r'equest 'o'kay from XBD 
+		.....
+		.....(data)
+		.....
+		'XBD04PPR'		-	Sending 'p'rogram 'p'arameters 'r'equest to XBD
+		'XBD04PPO'		-	Recieved 'p'rogram 'p'arameters 'o'kay from XBD
+		'XBD04PDR'		-	Sending 'p'rogram 'd'ownload 'r'equest to XBD
+		.....
+		.....(data)
+		.....
+		'XBD04PDO'		-	Received 'p'rogram 'd'ownload 'o'kay from XBD
+		'XBD04EXR'		-	Proper 'ex'ecution 'r'equest received
+		'XBD04EXO'		-	Handle 'ex'ecution 'o'kay sent
+		'XBD04SUR'		-	Proper 's'tack 'u'sage 'r'equest received
+		'XBD04SUO'		-	's'tack 'u'sage 'o'kay sent
+		'XBD04URR'		-	Sending 'u'pload 'r'esults 'r'equest to XBD
+		'XBD04URO'		-	Received 'u'pload 'r'esults 'o'kay from XBD
+		.....
+		.....(data)
+		.....
+		'XBD04RDR'		-	Sending 'r'esult 'd'ata 'r'equest to XBD
+		'XBD04RDO'		-	'r'esult 'd'ata 'r'equest 'o'kay from XBD 
+		.....
+		.....(data)
+		.....
+
+*data after opcodes...??	Msg. includes COMMAND('XBD04XXX') + data (if it exists, ~4bytes) + CRC(last 2bytes)
+
+(in ASCII)
+	04	-	XBD id? multiple XBDs... proto_version
+Modes:
+	bootloader	- for loading program
+	application	- for running algorithm
+Timing:
+	'TCR'	-	Request = COMMAND+CRC 		(from XBH)
+	'TCO'	-	Response = COMMAND+Cycles(4bytes,measured by XBD)+CRC 		(from XBD) 
+
+-----------------------------------------
+Questions:
+	Why repeat 3 times each for same algo with same params (53 bytes)?	- (enc,dec,frg?) and exec_runs=3 (config.ini)
+	Meaning of opcodes?	- xbh.c
+	output of ./execute, log of XBS? or xbh?	- mostly in XBH's prespective, but it is the filtered output by XBS. Since XBD->XBH data is relayed back to XBS, processed and stored (by XBS) the XBS prints these statements. 
+
+	*"Measured cycle count 0!" (not 'cycles') for F5529 - Execute signal not working on XBD? But why is 'cycles'!=0? (xbh.py) - wrong pin
+	*(wrong i2c_addr in XBD?? see Logic .ods files)	-	Little/big endian... see above.
+
+	Where are the SQL commands in XBS??
+	Code for AEAD, hash,etc.. wrapper for XBD?
+	How does upload results ("urr") work?? are the cyc. measured by XBH used after each run or are the vars. just for calibration??
+		-In XBS output - can see measured vals. after each run but not XBD cycles..
+	
+
+
+------------------------------------------------
+Timer:
+
+xbh/hal/measure.c	-	code for measuring time/power		
+		- PL4 (exec. pin) triggers timer
+		- "We use timer A for capture and timer B to count wraparounds of timer A" - Why is Timer B needed for wrap around?
+		- Initial timing calibration code......	-	in XBD_BL.c -> XBD_HAL.c
+
+		-is timer being stopped???
+			- is cap_cnt ever == 1??	No.	Now Works.
+
+
+TO DO:
+	1) Fix timing
+		- 1sec. timing calibration (5x) 
+		- Difference between cycles and measured cycles?	-	cycles=XBD, and measured_cycles=XBH
+				-	cycles	-	value is measured by XBD  
+				-	measured cycles	-	value is calc. by XBS (using sec., frac, frac_per_sec)	
+
+		- For each of the 3 runs - timing results: 'Recieve seconds, frac, frac_per_sec'
+		- 'XBD clock cycles' always close to 16M (during calibration)	
+				- might have to do with the fixed 16MHz constant in source code (see below)? or maybe wrap around problems?
+				- makes sense, should be 16 MHz (because =1sec.)
+		- Value 'Sec.' is way to big from XBH (during calibration) should be close to 1, so wraparound or calc. problems in XBH....
+
+		- is the 'XBD clock cycles' sent over I2C or measured by XBH?	-	'XBD clock cycles' is meas. by XBD but cycles is measured by both, see above...
+		
+		- DEVICE_SPECIFIC_SANE_TC_VALUE??		-equivalent to 1sec. cycles on XBD, used for calibration, used in XBD_BL.c
+
+		- Discrepancy between 'xbd_hz' and 'cyclespersecond'
+			* How is xbd specific freq. set? (xbh.py?, config.py)	- using settings.ini (cyclespersecond var.) under the platform specific folder (but only 'cyclespersecond' is recorded in data.db not 'xbd_hz')
+			* xbh.py  - does var. 'xbd_hz' change depending on device? No, changed setting.ini and ran ./compile but 'xbd_hz' didn't change (always set to 16Mhz) but this var. is used for timing calibrations.
+
+
+		- why is tm4c == 16mhz, datasheet says 80mhz?
+		- F_CPU (in global.h, f5529) used for setting XBD freq.?
+
+		- busyloops in XBD code (timing cal.)... where?	-	in XBD_BL.c (busyloop func. calls another func in XBD_HAL.c)
+		- Timer in XBH set to Input Edge-Time Mode...
+
+		--------------------------------------------
+		Timing now works but not accurate:
+				- Edge cases	-	
+				- Execution time -	not working, no t_stop
+
+
+
+	2) Fix execute signal in F5529
+			- xbh.py	- raise XbhValueError() not raise xbh.ValueError()?
+			- Now works - wrong pin mapping!!
+			- Can see exec. signal but 0's on I2C bus, no data??
+
+Timing in XBH:
+gtkterm
+	
+	- is g_syshz set correctly for XBH?
+	- MAP_TimerIntEnable(TIMER0_BASE, TIMER_TIMB_TIMEOUT) in setup-	shouldn't timerB be triggered by the timeout of timerA??
+		- No, TimerB runs in sync with TimerA but TimerA ISR triggered by rising/falling edge and TimerB ISR trigegred by wraparounds
+	- timer code not fully written..
+	- Why isn't timerA ISR triggered twice (rising./faling edge)?? - It does get triggered, t_toggle toggles twice as expected in debug.
+	- time should be 'mod timer_freq' not 'mod sys_hz'.	-	Timers use sys_clk so this is okay. (timer regs. are still 16-bit)
+	
+	(XBH.py <-> XBH.c <-> XBD)
+	XBH.py:
+  	 (calibration)
+		-get_timing_cal() - "tcr"	-	cycles by XBD
+		-_get_timings()	- "rpr"		-	seconds, frac, frac_per_sec
+		
+	 (execution)
+	    Func. called by execute():  -called from run.py?
+		-_exec_and_time()- "exr"	-	send CMD, then execute() calls _get_timings() and _get_results()
+		-_get_results()- "urr"		-	
+	XBH.c:
+	 (calibration)
+		-"tcr" -> XBH_HandleTimingCalibrationRequest() -> (timer_start) -> XBDsend"tcr" -> (XBH<-XBD("tco", cycles)) -> p_answer(->XBS)
+			- exec_timer_start() is used but not needed??	-	Needed because this triggers the exec. (pin) in XBD, so measure now.
+		-"rpr" -> XBH_HandleRePorttimestampRequest() -> retrieves/sends measured vals. to XBS
+			- Sends previously measured vals. doesn't trigger exec.
+
+	 (execution)
+		-"exr"	-> XBH_HandleEXecutionRequest() -> (timer_start) -> XBDsend(exr) -> (XBH<-XBD"exo")
+		-"urr" -> XBH_HandleUploadResultsRequest() -> XBDsend"urr" -> (XBH<-XBD(ok)) -> XBDsend"rdr" -> (XBH<-XBD "multiple pkts")
+
+	  Problem:
+		Calibration cycles work but execution cycles doesn't work (t_stop is always 0, enters ISR only once)
+			- This was because execution time was too small (for 0cipher, ~4 us) for XBH to capture whereas for cal., exec. pin was asserted for 1sec.
+			- Now WORKS
+			- 1ms - too small
+			- 3.4ms	- too small
+			- 6.15ms - works		--seems to be the limit
+			- 11.54ms - works
+			- 12.89ms - works
+		
+------------------------------------------------------------
+XBD Build process:
+	
+	- /platforms 	-	contains HAL code and makefile to build bootloader for specific uC
+		- /setting.ini	-	XBD specific settings
+		- hal/XBD_DeviceDependent.h	-	
+
+	- /embedded/xbd_{af/bl}	-	bootloader/ other non uC specific code (contains main())
+
+------------------------------------------------------------
+XBS Run:
+	- ./config.ini
+	- ./execute.py
+	
+	- /embedded/xbd_{app/op} -	used for compiling algorithms, app+op(aead,hash)+algorithm
+	- platforms/'XBD'/c_compilers -	used by XBS for choosing compiler/options for compiling algorithms
+
+	
+
+
+
+-----------------------------------------------------------
+SQL Database:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+	
