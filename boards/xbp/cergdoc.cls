@@ -15,19 +15,29 @@
 \LoadClass[letterpaper]{report}
 
 \RequirePackage{graphicx} % needed for logo and pictures
-\RequirePackage{color}
+\RequirePackage{xcolor}
+\RequirePackage[hidelinks=true]{hyperref}
+\RequirePackage{tcolorbox}
 
 % Color Definitions
-\definecolor{cergpurple}{RGB}{64,5,116}
-\definecolor{cergpink}{RGB}{128,35,145}
-\definecolor{cerglightblue}{RGB}{140,159,229}
+\definecolor{cergpurple}{HTML}{3D0473}
+\definecolor{cergpink}{HTML}{802391}
 \definecolor{cergblue}{RGB}{100,116,172}
+\definecolor{cerglightblue}{HTML}{8C9EE5}
+\definecolor{cerggold}{HTML}{F6C74F}
 
 % Title Page
 
 %https://tex.stackexchange.com/questions/125383/default-values-in-newcommand-renewing-maketitle
 \let\@subtitle\@empty
-\newcommand{\subtitle}[1][Subtitle]{\gdef\@subtitle{#1}}
+\let\@email\@empty
+\let\@affiliation\@empty
+\def\@topicpic{\includegraphics[width=40mm]{cergimg/cerglogo.pdf}}
+
+\newcommand{\subtitle}[1]{\gdef\@subtitle{#1}}
+\newcommand{\email}[1]{\gdef\@email{#1}}
+\newcommand{\affiliation}[1]{\gdef\@affiliation{#1}}
+\newcommand{\topicpic}[1]{\gdef\@topicpic{\includegraphics[width=\paperwidth]{cergimg/#1}}}
 
 \newenvironment{alwayssingle}{%
        \@restonecolfalse
@@ -39,20 +49,74 @@
 
 \renewcommand\maketitle{
   \begin{alwayssingle}
+    \thispagestyle{empty}
+%    \vspace*{\dimexpr-\baselineskip-\topskip-\topmargin-0.9in\relax}
+    \vspace*{\dimexpr-1in-\voffset-\topmargin-\baselineskip}
+    \noindent\makebox[\textwidth]{\@topicpic}
     \begin{center}
+%      {\par\@topicpic\par\vspace*{15mm}}
       ~
-      \rule{\textwidth}{1pt}\par % Thick horizontal line
-      {\Huge\bfseries\@title\par}
-      \rule{\textwidth}{1pt}\par % Thick horizontal line
+%      \rule{\textwidth}{1pt}\par % Thick horizontal line
+      \vspace{0.5in}
 
-      {\ifx\@subtitle\@empty\else\large\vspace*{1ex}\par\@subtitle\par\fi}
-      {{\Large \bf \@author} \par}
+      {\Huge\bfseries\@title\par}
+
+      {\ifx\@subtitle\@empty\else\Large\vspace*{1ex}\par\@subtitle\par\fi}
+      \vspace{0.5in}
+      \noindent\makebox[\textwidth]{\color{cergpurple}\rule{\paperwidth}{3pt}}
+\vfill
+      {\large\bfseries\@author\par}
+      {\ifx\@email\@empty\else\large\@email\par\fi}
+      {\ifx\@affiliation\@empty\else\large\@affiliation\par\fi}
+
+\vfill
+       \begin{minipage}{\textwidth}
+              \begin{minipage}[!t]{0.30\textwidth}
+                \begin{center}
+                     \vspace{1ex}
+                    \includegraphics[scale=0.35]{./cergimg/CERG-logo-sm.png}
+                \end{center}
+            \end{minipage}
+            \begin{minipage}[!t]{0.39\textwidth}
+                 \hspace{3ex}
+            \end{minipage}
+            \begin{minipage}[!t]{0.30\textwidth}
+		    \begin{center}  
+			\includegraphics[scale=.50]{./cergimg/Mason-logo.png}
+		\end{center}
+            \end{minipage}
+        \end{minipage}
+        \begin{minipage}{\textwidth}
+              \begin{minipage}[!t]{0.30\textwidth}
+                \begin{center}
+                     \vspace{1ex}
+                    \href{https://cryptography.gmu.edu/}{www.cryptography.gmu.edu} 
+                \end{center}
+            \end{minipage}
+            \begin{minipage}[!t]{0.39\textwidth}
+                 \hspace{3ex}
+            \end{minipage}
+            \begin{minipage}[!t]{0.30\textwidth}
+		    \centering
+                    \href{https://www.gmu.edu/}{www.gmu.edu} 
+            \end{minipage}
+            \end{minipage}
+
 
     \end{center}
+    \noindent\makebox[\textwidth]{\begin{tcolorbox}[width=\paperwidth,colback={cerglightblue},arc=0mm,colupper=white,colframe={cergpink},boxrule=0pt,toprule=3pt]
+    \centering
+    {\color{cerggold}Cryptographic Engineering Research Group}\\
+    Department of Electrical and Computer Engineering \quad\quad George Mason University\\
+    3100 Engineering Building, \quad 4400 University Drive, \quad   Fairfax, VA 22030-4444,  USA \\
+    Voice: (703) 993-1561, \quad Fax: (703) 993-1601 
+    \end{tcolorbox}}
+    \vspace*{\dimexpr-1in-\footskip-\baselineskip}
 
   \end{alwayssingle}
 
 }
+\endinput
 
 %%%%%CHAPTER SETTINGS
 \def\startofchapters{%
