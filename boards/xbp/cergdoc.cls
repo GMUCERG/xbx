@@ -1,23 +1,25 @@
-%%  BASIC STYLE PAGE FOR CERG
-%%
-%%  Developed by:
-%%      Panasayya Yalla 
-%%      George Mason University
-%%      (style adapted from GMU thesis latex style)
-%%
-%%
-%%
-%%
-%%
-%%
+% CERG Documentation LaTeX class
+%
+% Copyright (c) 2015 Cryptographic Engineering Research Group
+%   ECE Department, George Mason University Fairfax, VA, U.S.A.
+%   All rights Reserved.
+%
+% Autor: Jens-Peter Kaps
+% 
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cergdoc}[2018/03/20 v1.0 CERG Documentation class]
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
+\ProcessOptions\relax
+
 \LoadClass[letterpaper]{report}
 
 \RequirePackage{graphicx} % needed for logo and pictures
 \RequirePackage{xcolor}
 \RequirePackage[hidelinks=true]{hyperref}
 \RequirePackage{tcolorbox}
+\RequirePackage{fancyhdr}
+\RequirePackage{fullpage}
 
 % Color Definitions
 \definecolor{cergpurple}{HTML}{3D0473}
@@ -25,6 +27,27 @@
 \definecolor{cergblue}{RGB}{100,116,172}
 \definecolor{cerglightblue}{HTML}{8C9EE5}
 \definecolor{cerggold}{HTML}{F6C74F}
+
+%\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\vskip-3pt\makebox[\textwidth]{\color{cergpurple}\rule{\paperwidth}{3pt}}\vskip\baselineskip}
+\renewcommand{\footrule}{\vskip-\footruleskip\vskip-3pt\makebox[\textwidth]{\color{cergpink}\rule{\paperwidth}{3pt}}\vskip\footruleskip\vskip 3pt}
+\fancyhead{} % clear all header fields
+\fancyhead[LE,RO]{\textsl{\rightmark}}
+\fancyhead[LO,RE]{\textsl{\leftmark}}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[LE,RO]{\thepage}
+%\renewcommand{\footrule}{\color{cergpurple}\rule{\paperwidth}{3pt}}
+
+\fancypagestyle{plain}{%
+\fancyhead{} % get rid of headers on plain pages
+%\renewcommand{\headrulewidth}{0pt}% 
+\renewcommand{\headrule}{}
+}
+\addtolength{\headheight}{2ex}
+\addtolength{\headheight}{2\baselineskip}
+\addtolength{\voffset}{-1ex}
+\addtolength{\voffset}{-\baselineskip}
+
 
 % Title Page
 
@@ -51,8 +74,9 @@
   \begin{alwayssingle}
     \thispagestyle{empty}
 %    \vspace*{\dimexpr-\baselineskip-\topskip-\topmargin-0.9in\relax}
-    \vspace*{\dimexpr-1in-\voffset-\topmargin-\baselineskip}
+    \vspace*{\dimexpr-1in-\voffset-\topmargin-\baselineskip-\headheight}
     \noindent\makebox[\textwidth]{\@topicpic}
+    \vspace{-\headheight}
     \begin{center}
 %      {\par\@topicpic\par\vspace*{15mm}}
       ~
@@ -67,6 +91,8 @@
 \vfill
       {\large\bfseries\@author\par}
       {\ifx\@email\@empty\else\large\@email\par\fi}
+      \vspace{0.5in}
+      \today\par
       {\ifx\@affiliation\@empty\else\large\@affiliation\par\fi}
 
 \vfill
@@ -77,9 +103,10 @@
                     \includegraphics[scale=0.35]{./cergimg/CERG-logo-sm.png}
                 \end{center}
             \end{minipage}
-            \begin{minipage}[!t]{0.39\textwidth}
-                 \hspace{3ex}
-            \end{minipage}
+\hfill
+%            \begin{minipage}[!t]{0.39\textwidth}
+%                 \hspace{3ex}
+%            \end{minipage}
             \begin{minipage}[!t]{0.30\textwidth}
 		    \begin{center}  
 			\includegraphics[scale=.50]{./cergimg/Mason-logo.png}
@@ -90,12 +117,13 @@
               \begin{minipage}[!t]{0.30\textwidth}
                 \begin{center}
                      \vspace{1ex}
-                    \href{https://cryptography.gmu.edu/}{www.cryptography.gmu.edu} 
+                    \href{https://cryptography.gmu.edu/}{cryptography.gmu.edu} 
                 \end{center}
             \end{minipage}
-            \begin{minipage}[!t]{0.39\textwidth}
-                 \hspace{3ex}
-            \end{minipage}
+\hfill
+%            \begin{minipage}[!t]{0.39\textwidth}
+%                 \hspace{3ex}
+%            \end{minipage}
             \begin{minipage}[!t]{0.30\textwidth}
 		    \centering
                     \href{https://www.gmu.edu/}{www.gmu.edu} 
@@ -109,15 +137,25 @@
     {\color{cerggold}Cryptographic Engineering Research Group}\\
     Department of Electrical and Computer Engineering \quad\quad George Mason University\\
     3100 Engineering Building, \quad 4400 University Drive, \quad   Fairfax, VA 22030-4444,  USA \\
-    Voice: (703) 993-1561, \quad Fax: (703) 993-1601 
+    Voice: (703) 993-1561, \quad Fax: (703) 993-1601 \\
+~
     \end{tcolorbox}}
-    \vspace*{\dimexpr-1in-\footskip-\baselineskip}
+    \vspace*{\dimexpr-1in-\footskip}%-\baselineskip+15pt}
 
   \end{alwayssingle}
 
 }
-\endinput
+%\endinput
 
+
+% box with mandatory title and options
+\newtcolorbox{cergbox}[2][]{
+   colframe=cergpurple,
+   colback=cerglightblue!10!white,
+   fonttitle=\bfseries,
+   title = #2,
+   #1
+}
 %%%%%CHAPTER SETTINGS
 \def\startofchapters{%
     \renewcommand{\thepage}{\arabic{page}}

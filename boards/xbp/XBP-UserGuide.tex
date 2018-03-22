@@ -1,7 +1,8 @@
-\documentclass{cergdoc}
-\usepackage{fullpage}
+\documentclass[twoside,11pt]{cergdoc}
+%\usepackage{fullpage}
 \usepackage{graphicx}
 %\usepackage[hidelinks=true]{hyperref}
+\pagestyle{fancy}
 
 \begin{document}
 
@@ -15,7 +16,7 @@
 
 \maketitle
 
-\section{XBP Configuration}
+\chapter{XBP Configuration}
 The XBP uses three voltage supplies. The first supply, called $\mathrm{V_{CC}H}$
 uses 3.3\,V from the XBH and powers the I$^2$C pull-up resistors, the activity LED, 
 and the level shifters.
@@ -23,7 +24,7 @@ The second supply, called $\mathrm{V_{CC}P}$ uses 5\,V and powers the current
 sense amplifier of the XBP and the power LED. 
 The third supply is $\mathrm{V_{CC}D}$ which powers the XBD.
 
-\subsection{Powering the XBP}
+\section{Powering the XBP}
 In this section we only discuss how to supply $\mathrm{V_{CC}H}$ and $\mathrm{V_{CC}P}$.
 There are two options to power the XBP. Option one is to power the XBP from the
 XBH using the LaunchPad connector. This only works if the XBP is directly plugged into the 
@@ -55,12 +56,12 @@ If this is desired, please populate \textbf{IC1} with an LDO voltage regulator i
 SOT-89-3 package. An example is the Microchip MCP1702T-3302E/MB 3.3\,V regulator.
 
 
-\subsection{I$^2$C Pull-Up Resistors}
+\section{I$^2$C Pull-Up Resistors}
 The XBP can provide the pull-up resistors for I$^2$C. These are needed only once on an 
 I$^2$C bus. We suggest that you populate \textbf{R3} and \textbf{R4} using 
 10\,kOhm resistors (size: 0604) on the first XBP (XBP0).
 
-\subsection{Using XBDs with V$_{CC} = 3.3$\,V}
+\section{Using XBDs with V$_{CC} = 3.3$\,V}
 If your XBD uses a V$_{CC} = 3.3$\,V and has a LaunchPad connector, you can plug it 
 directly on top of the XBP. 
 Otherwise you can use the XBD connector on the back of the XBP (see Fig.~\ref{fig:xbd})
@@ -76,13 +77,13 @@ on particular XBDs.
   \end{center}
 \end{figure}
 
-\subsection{Using XBDs with V$_{CC} \not= 3.3$\,V}
+\section{Using XBDs with V$_{CC} \not= 3.3$\,V}
 Such XBDs can only be connected through the XBD connector on the back (Fig~\ref{fig:xbd}).
 The FETs Q3 through Q8 and the resistors R9  through R11 have to be populated.
 Please make sure that solder jumpers \textbf{SJ1}, \textbf{SJ2}, and \textbf{SJ3} 
 are open. $\mathrm{V_{CC}D}$ can be higher or lower than 3.3\,V.
 
-\subsection{Usage without XBH}
+\section{Usage without XBH}
 The XBP can be used also without an XBH as an experimenter's board for the INA225 
 current sense amplifier. The XBH requires $\mathrm{V_{CC}P}$ of 5\,V to be supplied
 through its power connector (see Fig.~\ref{fig:power}. The power for the device 
