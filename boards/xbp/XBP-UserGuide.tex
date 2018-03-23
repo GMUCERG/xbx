@@ -74,6 +74,11 @@ gain, topping out at 32\,mA, and 132\,$\mu$A resolution at a gain of 25 topping 
   \end{center}
 \end{figure}
 
+\section{Voltage Level Shifter}
+Some XBDs might require a supply voltage $V_{CC}D$ which is higher than the $V_{CC}P = 3.3$\,V
+or lower. As all controll signales for the XBD pass through the XBP, we added circuitry for
+voltage level shifting. 
+
 \section{Optional Functionality}
 Because of its location in an XXBX setup, we were able to integrate additional 
 functionality which leads to a cleaner setup.
