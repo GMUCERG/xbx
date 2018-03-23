@@ -1,7 +1,6 @@
 \documentclass[twoside,11pt]{cergdoc}
-%\usepackage{fullpage}
 \usepackage{graphicx}
-%\usepackage[hidelinks=true]{hyperref}
+\usepackage{amsmath}
 \pagestyle{fancy}
 
 \begin{document}
@@ -16,7 +15,89 @@
 
 \maketitle
 
+\tableofcontents
+
+\chapter{Introduction}
+The XXBX Power Shim (XBP) connects the Harness (XBH) to the Device under test (XBD). Figure~\ref{fig:xxbxsetup}
+shows a typical XXBX setup with the XBP placed between the XBH and the XBD. All signals from the 
+XBH to the XBD pass through the XBP. The main purpose of the XBP is to sense the current 
+drawn by the XBD, amplify its value and pass it on to the XBH for measurement. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=1]{figures/xxbx-setup-side}
+    \caption{XXBX Setup with XBH on the bottom followed by XBP in the middle and XBD on top}\label{fig:xxbxsetup}
+  \end{center}
+\end{figure}
+
+\section{XBP Current Sensing and Amplification}
+The power consumed by a device can be computed from the current $I$ that it draws and
+its supply voltage $\mathrm{V_{CC}D}$ as $P = I \cdot V_{CC}D$. The energy it 
+consumes for executing a particular task is the integral of $P$ over the run time.
+As the voltage $V_{CC}D$ is fixed for a particular XBD we only have to measure 
+the current.
+
+The current measured by sensing the voltage drop across a small shunt resistor $R_S$.
+The shunt resistor could be placed between the voltage source and the device
+or between the device and ground called high-side and low-side current sensing
+respectively. We opted for high-side current sensing (see Fig\,\ref{fig:ina225})
+as it eliminates the problems associated with multiple ground paths. 
+The drawback of high-side sensing is the higher common-mode voltage which is the
+average voltage before and after the shunt. 
+
+
+The shunt resistor should be very small as to not have a large influence on 
+the supply voltage to the XBD. As the voltage drop across a small resistor will
+also be very small, it has to be amplified. Furthermore, the low input resistance
+of analog to digital converters (ADCs) makes a direct measurement unfeasible.  
+Hence, we use a current-shunt monitor (CSM), i.e.\ the INA225 from Texas Instruments.
+It has a programmable gain setting between 25 and 200, a buffered output so that it
+can drive an ADC input, and a 125\,kHz bandwidth, and supports high common-mode voltages.
+
+\begin{equation}
+  I_{res}=\frac{V_{CSM}}{2^{ADCbits}} \label{eq:current}
+\end{equation}
+
+\noindent The current measurement resolution is shown in \eqref{eq:current}. The maximum input voltage
+to the ADC is 3.3V. Therefore
+%
+\[V_{CSM} = 3.3\,\mathrm{V} = V_S \cdot \delta_{CSM} = R_S \cdot I \cdot \delta_{CSM}\]
+%
+where $\delta_{CSM}$ is the gain of the CSM. When using a 1\,$\Omega$ $R_S$ we achieve
+a current resolution of 16.5\,$\mu$A at 200
+gain, topping out at 32\,mA, and 132\,$\mu$A resolution at a gain of 25 topping out at 132\,mA.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=1]{figures/ina225}
+    \caption{Block Diagram of the Power Measurement Setup}\label{fig:ina225}
+  \end{center}
+\end{figure}
+
+\section{Optional Functionality}
+Because of its location in an XXBX setup, we were able to integrate additional 
+functionality which leads to a cleaner setup.
+
+\subsection{I$^2$C Pull-Up Resistors}
+The I$^2$C bus requires pull-up resistors. The XBH does not have pull-up resistors on 
+its I$^2$C pins. Only some XBDs either have these pull-up
+resistors or can be configured to use internal pull-up resistors. We therefore decided
+to provide a place for pull-up resistors on the XBP. They can be put on the board 
+depending on the users needs.
+
+\subsection{Power Regulation}
+The operating voltage for an XBD ($\mathrm{V_{CC}D}$) has to pass through the XBP to measure the 
+current consumption. As $\mathrm{V_{CC}D}$ depends on the particular XBD,
+it makes sense to provide a place on the XBP for a voltage regulator. This 
+enables the user to supply all XBP's with 5\,V and have the voltage regulator
+on the XBP produce the voltage required for each individual XBD.
+
 \chapter{XBP Configuration}
+
+\section{Shunt Resistor Selection}
+$R_S$
+
+\section{Supply Voltages}
 The XBP uses three voltage supplies. The first supply, called $\mathrm{V_{CC}H}$
 uses 3.3\,V from the XBH and powers the I$^2$C pull-up resistors, the activity LED, 
 and the level shifters.
@@ -24,7 +105,7 @@ The second supply, called $\mathrm{V_{CC}P}$ uses 5\,V and powers the current
 sense amplifier of the XBP and the power LED. 
 The third supply is $\mathrm{V_{CC}D}$ which powers the XBD.
 
-\section{Powering the XBP}
+\subsection{Powering the XBP}
 In this section we only discuss how to supply $\mathrm{V_{CC}H}$ and $\mathrm{V_{CC}P}$.
 There are two options to power the XBP. Option one is to power the XBP from the
 XBH using the LaunchPad connector. This only works if the XBP is directly plugged into the 
@@ -56,12 +137,7 @@ If this is desired, please populate \textbf{IC1} with an LDO voltage regulator i
 SOT-89-3 package. An example is the Microchip MCP1702T-3302E/MB 3.3\,V regulator.
 
 
-\section{I$^2$C Pull-Up Resistors}
-The XBP can provide the pull-up resistors for I$^2$C. These are needed only once on an 
-I$^2$C bus. We suggest that you populate \textbf{R3} and \textbf{R4} using 
-10\,kOhm resistors (size: 0604) on the first XBP (XBP0).
-
-\section{Using XBDs with V$_{CC} = 3.3$\,V}
+\subsubsection{Using XBDs with V$_{CC} = 3.3$\,V}
 If your XBD uses a V$_{CC} = 3.3$\,V and has a LaunchPad connector, you can plug it 
 directly on top of the XBP. 
 Otherwise you can use the XBD connector on the back of the XBP (see Fig.~\ref{fig:xbd})
@@ -77,15 +153,20 @@ on particular XBDs.
   \end{center}
 \end{figure}
 
-\section{Using XBDs with V$_{CC} \not= 3.3$\,V}
+\subsubsection{Using XBDs with V$_{CC} \not= 3.3$\,V}
 Such XBDs can only be connected through the XBD connector on the back (Fig~\ref{fig:xbd}).
 The FETs Q3 through Q8 and the resistors R9  through R11 have to be populated.
 Please make sure that solder jumpers \textbf{SJ1}, \textbf{SJ2}, and \textbf{SJ3} 
 are open. $\mathrm{V_{CC}D}$ can be higher or lower than 3.3\,V.
 
+\section{I$^2$C Pull-Up Resistors}
+The XBP can provide the pull-up resistors for I$^2$C. These are needed only once on an 
+I$^2$C bus. We suggest that you populate \textbf{R3} and \textbf{R4} using 
+10\,kOhm resistors (size: 0604) on the first XBP (XBP0).
+
 \section{Usage without XBH}
 The XBP can be used also without an XBH as an experimenter's board for the INA225 
-current sense amplifier. The XBH requires $\mathrm{V_{CC}P}$ of 5\,V to be supplied
+current-shunt monitor. The XBH requires $\mathrm{V_{CC}P}$ of 5\,V to be supplied
 through its power connector (see Fig.~\ref{fig:power}. The power for the device 
 under test can be supplied as described in section~\ref{sec:vccd}. The amplified
 voltage drop over the shunt can be measured by through the SMA connector \textbf{X1}.
@@ -94,8 +175,9 @@ for the different gains are printed on the circuit board. The device under test 
 get its power from the XBD connector (see Fig.~\ref{fig:xbd}). Only pins 1 and 2,
 V$_{CC}$ and GND respectively, have to be used.
 
-\section{XBX Devices under Test (XBD)}\label{sec:xbd}
-\subsection{TI Stellaris\textregistered~LM4F120 LaunchPad}
+\chapter{XBX Devices under Test (XBD)}\label{sec:xbd}
+
+\section{TI Stellaris\textregistered~LM4F120 LaunchPad}
 
 Neither the Debug, nor the Device USB should be connected for power measurements.
 The \emph{+3.3V} line on pin J1.1 of the boosterpack connector is connected 
@@ -107,23 +189,23 @@ Launchpad lights up when the 3.3V are supplied to the left (wrong) pin.
 The \emph{PWR Select} switch can be in any position and won't affect the 
 measurements.
 
-\subsection{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
+\section{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
 
 The circuit connections are the same as on the TI Stellaris LaunchPad. Please follow
 those instructions. Supply voltage is 3.3V with a maximum current of 300\,mA.
 
-\subsection{TI MSP430F5529 LaunchPad\texttrademark}
+\section{TI MSP430F5529 LaunchPad\texttrademark}
 
 For precise current measurements remove all jumpers from the isolation jumper block 
 with the exception of the ground (GND) jumper. 
 
-\subsection{TI MSP430FR6989 LaunchPad\texttrademark}
+\section{TI MSP430FR6989 LaunchPad\texttrademark}
 
 For precise current measurements remove all jumpers from the isolation jumper block 
 with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
 current of 2.7\,mA not including LEDs or external circuitry.
 
-\section{XBP Assembly}
+\chapter{XBP Assembly}
 
 \section{XBP Connections}
 
