@@ -145,7 +145,6 @@
   \end{alwayssingle}
 
 }
-%\endinput
 
 
 % box with mandatory title and options
@@ -156,6 +155,8 @@
    title = #2,
    #1
 }
+
+\endinput
 %%%%%CHAPTER SETTINGS
 \def\startofchapters{%
     \renewcommand{\thepage}{\arabic{page}}

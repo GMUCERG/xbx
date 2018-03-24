@@ -37,7 +37,7 @@ consumes for executing a particular task is the integral of $P$ over the run tim
 As the voltage $V_{CC}D$ is fixed for a particular XBD we only have to measure 
 the current.
 
-The current measured by sensing the voltage drop across a small shunt resistor $R_S$.
+The current is measured by sensing the voltage drop across a small shunt resistor $R_S$.
 The shunt resistor could be placed between the voltage source and the device
 or between the device and ground called high-side and low-side current sensing
 respectively. We opted for high-side current sensing (see Fig\,\ref{fig:ina225})
@@ -47,25 +47,39 @@ average voltage before and after the shunt.
 
 
 The shunt resistor should be very small as to not have a large influence on 
-the supply voltage to the XBD. As the voltage drop across a small resistor will
-also be very small, it has to be amplified. Furthermore, the low input resistance
-of analog to digital converters (ADCs) makes a direct measurement unfeasible.  
+the supply voltage of the XBD, however that means that voltage drop across the shunt will
+also be very small. Therefore, it has to be amplified before it can be measured by 
+an analog to digital converter (ADC). Furthermore, the low input resistance
+of ADCs makes a direct measurement unfeasible.  
 Hence, we use a current-shunt monitor (CSM), i.e.\ the INA225 from Texas Instruments.
 It has a programmable gain setting between 25 and 200, a buffered output so that it
-can drive an ADC input, and a 125\,kHz bandwidth, and supports high common-mode voltages.
+can drive an ADC input, a bandwidth of 125\,kHz, and supports high common-mode voltages.
 
+The resolution of the ADC is shown in~\eqref{eq:adcres}. The maximum input voltage
+to the ADC is 3.3V and its resolution is 12\,bits. 
 \begin{equation}
-  I_{res}=\frac{V_{CSM}}{2^{ADCbits}} \label{eq:current}
+  V_{res}=\frac{V_{CSM}}{2^{ADCbits}} = \frac{3.3\,\mathrm{V}}{2^{12}\,\mathrm{bits}} = 0.8\,\mathrm{mV} \label{eq:adcres}
 \end{equation}
 
-\noindent The current measurement resolution is shown in \eqref{eq:current}. The maximum input voltage
-to the ADC is 3.3V. Therefore
+The voltage applied to the ADC depends on the voltage drop across the shunt resistor
+$R_S$ and the gain of the CSM $\delta_{CSM}$. This relationship is expressed in~\eqref{eq:csm}.
+\begin{equation}
+  V_{CSM} = 3.3\,\mathrm{V} = V_S \cdot \delta_{CSM} = R_S \cdot I \cdot \delta_{CSM} \label{eq:csm}
+\end{equation}
+
+When using a 1\,$\Omega$ resistor for $R_S$ we achieve for a gain factor of 25 a resolution of
 %
-\[V_{CSM} = 3.3\,\mathrm{V} = V_S \cdot \delta_{CSM} = R_S \cdot I \cdot \delta_{CSM}\]
+\[I_{res} = \frac{V_{res}}{R_S \cdot \delta_{CSM}} = \frac{0.8\,\mathrm{mV}}{1\,\Omega \cdot 25} = 32\,\mathrm{\mu A}\]
 %
-where $\delta_{CSM}$ is the gain of the CSM. When using a 1\,$\Omega$ $R_S$ we achieve
-a current resolution of 16.5\,$\mu$A at 200
-gain, topping out at 32\,mA, and 132\,$\mu$A resolution at a gain of 25 topping out at 132\,mA.
+and can measure a current of at most
+%
+\[I_{max} = \frac{V_{res}}{R_S \cdot \delta_{CSM}} = \frac{3.3\,\mathrm{V}}{1\,\Omega \cdot 25} = 132\,\mathrm{mA}.\]
+%
+%a current resolution of 16.5\,$\mu$A at 200 gain, topping out at 32\,mA, 
+%and 132\,$\mu$A resolution at a gain of 25 topping out at 132\,mA.
+%
+At the maximum gain of 200 the resolution is $4.0\,\mathrm{\mu A}$ and the maximum current is 16.5\,mA.
+
 
 \begin{figure}[ht]
   \begin{center}
@@ -76,8 +90,28 @@ gain, topping out at 32\,mA, and 132\,$\mu$A resolution at a gain of 25 topping 
 
 \section{Voltage Level Shifter}
 Some XBDs might require a supply voltage $V_{CC}D$ which is higher than the $V_{CC}P = 3.3$\,V
-or lower. As all controll signales for the XBD pass through the XBP, we added circuitry for
-voltage level shifting. 
+or lower. As all control signals for the XBD pass through the XBP, we added circuitry for
+voltage level shifting. The circuit used on the XBP is shown in fig\,~\ref{fig:voltagelevel}. 
+
+When SDA is not active or any side want to transmit a logic `one', the pull-up resistors on both 
+sides pull the input on the XBD and the XBH to their voltage levels. 
+When the XBH pulls down SCL, the source input of the transistor Q6 becomes low, while the gate stays high. 
+$V_{GS}$ rises above the threshold and the transistor conducts. This pulls down the 
+the drain input of Q5. Now the drain-substrate diode of Q5 is pulled down until $V_GS$ passes the
+threshold and the transistor conducts, hence
+SDA on the XBD is low. 
+Due to symmetry, XBD can pull down SDA in a similar fashion which results in SDA on XBH going low.
+While single transistor solutions exist that can accomplish the same functionality,
+only this 2 transistor circuit is agnositc to whether the XBD side or the XBH side has a higer
+$V_CC$, i.e.\ it allows the use XBDs with higher as well as with lower supply
+voltage. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=1]{figures/voltagelevel}
+    \caption{Voltage Level Shifter for I$^2$C}\label{fig:voltagelevel}
+  \end{center}
+\end{figure}
 
 \section{Optional Functionality}
 Because of its location in an XXBX setup, we were able to integrate additional 
