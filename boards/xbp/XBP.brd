@@ -6414,7 +6414,7 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <contactref element="R6" pad="1"/>
 <wire x1="43.18" y1="2.9725" x2="43.18" y2="5.1825" width="0.254" layer="1"/>
 </signal>
-<signal name="VCC">
+<signal name="VCCH">
 <contactref element="Q1" pad="2"/>
 <contactref element="R4" pad="2"/>
 <contactref element="R3" pad="2"/>

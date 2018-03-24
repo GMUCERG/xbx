@@ -28,12 +28,13 @@
 \definecolor{cerglightblue}{HTML}{8C9EE5}
 \definecolor{cerggold}{HTML}{F6C74F}
 
+% Header and Footer Style
 %\renewcommand{\footrulewidth}{0.4pt}
 \renewcommand{\headrule}{\vskip-3pt\makebox[\textwidth]{\color{cergpurple}\rule{\paperwidth}{3pt}}\vskip\baselineskip}
 \renewcommand{\footrule}{\vskip-\footruleskip\vskip-3pt\makebox[\textwidth]{\color{cergpink}\rule{\paperwidth}{3pt}}\vskip\footruleskip\vskip 3pt}
 \fancyhead{} % clear all header fields
-\fancyhead[LE,RO]{\textsl{\rightmark}}
-\fancyhead[LO,RE]{\textsl{\leftmark}}
+\fancyhead[LE,RO]{\textsl{\leftmark}}
+\fancyhead[LO,RE]{\textsl{CERG}}
 \fancyfoot{} % clear all footer fields
 \fancyfoot[LE,RO]{\thepage}
 %\renewcommand{\footrule}{\color{cergpurple}\rule{\paperwidth}{3pt}}
@@ -48,7 +49,11 @@
 \addtolength{\voffset}{-1ex}
 \addtolength{\voffset}{-\baselineskip}
 
+\pagestyle{fancy}
 
+\renewcommand{\chaptermark}[1]{%
+\markboth{\MakeUppercase{%
+\thechapter.\ #1}}{}}
 % Title Page
 
 %https://tex.stackexchange.com/questions/125383/default-values-in-newcommand-renewing-maketitle
@@ -100,7 +105,7 @@
               \begin{minipage}[!t]{0.30\textwidth}
                 \begin{center}
                      \vspace{1ex}
-                    \includegraphics[scale=0.35]{./cergimg/CERG-logo-sm.png}
+                    \includegraphics[scale=0.11]{./cergimg/cerg.png}
                 \end{center}
             \end{minipage}
 \hfill
@@ -109,7 +114,7 @@
 %            \end{minipage}
             \begin{minipage}[!t]{0.30\textwidth}
 		    \begin{center}  
-			\includegraphics[scale=.50]{./cergimg/Mason-logo.png}
+			\includegraphics[scale=1.0]{./cergimg/Mason.pdf}
 		\end{center}
             \end{minipage}
         \end{minipage}
@@ -134,7 +139,7 @@
     \end{center}
     \noindent\makebox[\textwidth]{\begin{tcolorbox}[width=\paperwidth,colback={cerglightblue},arc=0mm,colupper=white,colframe={cergpink},boxrule=0pt,toprule=3pt]
     \centering
-    {\color{cerggold}Cryptographic Engineering Research Group}\\
+    {\color{cerggold}\textbf{Cryptographic Engineering Research Group}}\\
     Department of Electrical and Computer Engineering \quad\quad George Mason University\\
     3100 Engineering Building, \quad 4400 University Drive, \quad   Fairfax, VA 22030-4444,  USA \\
     Voice: (703) 993-1561, \quad Fax: (703) 993-1601 \\
@@ -155,6 +160,27 @@
    title = #2,
    #1
 }
+
+% Chapter style
+\def\@makechapterhead#1{
+  { \parindent 0pt \raggedright
+    \vspace*{0.27 in}
+     {\Huge \bf \color{cergpurple}\thechapter \hspace{2ex}#1} \par
+    \nobreak
+    \vskip 22 pt 
+  }
+
+}
+
+\def\@makeschapterhead#1{
+  { \parindent 0pt \raggedright
+    \vspace*{0.6 in}
+    \centerline{\Huge \bf \color{cergpurple}#1} \par
+    \nobreak
+    \vskip 40pt
+  }
+}
+
 
 \endinput
 %%%%%CHAPTER SETTINGS
@@ -207,27 +233,3 @@
         \@dottedtocline{0}{0.0em}{1.35em}
 }
 
-\def\@makechapterhead#1{
-  { \parindent 0pt \raggedright
-    \vspace*{0.27 in}%{0.75in}
-%%%    \centerline{\Large \bf \@chapapp{} \thechapter
-    \begin{center}
-     {\Large \bf Chapter \thechapter
-    \Large \bf
-%%%   \space : #1} \par
-    : #1} \par
-\end{center}
-    \nobreak
-    \vskip 22 pt %40pt
-  }
-
-}
-
-\def\@makeschapterhead#1{
-  { \parindent 0pt \raggedright
-    \vspace*{0.6 in}%{0.75in}
-    \centerline{\Large \bf #1} \par
-    \nobreak
-    \vskip 40pt
-  }
-}
