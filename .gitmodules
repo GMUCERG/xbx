@@ -5,5 +5,5 @@
         path = xbh
         url = https://github.com/GMUCERG/xbh.git
 [submodule "SUPERCOP"]
-        path = SUPERCOP
-        url = https://github.com/GMUCERG/SUPERCOP.git
+	path = SUPERCOP
+	url = https://github.com/GMUCERG/SUPERCOP.git
