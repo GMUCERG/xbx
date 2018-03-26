@@ -1,0 +1,53 @@
+\documentclass[twoside,11pt]{cergdoc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{XXBX Device Under Test -- XBD}
+\subtitle{XBD User Guide v1.0}
+\author{Matthew R. Carter \and Raghurama R. Velegala \and Jens-Peter Kaps}
+\author{Jens-Peter Kaps}
+\email{jkaps@gmu.edu}
+\affiliation{George Mason University\\
+  Fairfax, Virginia}
+\topicpic{xxbx-slide}
+
+\maketitle
+
+\tableofcontents
+
+% -----------------------------------------------------------------------------
+\chapter{Introduction}
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\chapter{Boot Loader}
+% -----------------------------------------------------------------------------
+  \section{Overview}
+  \section{Hardware Abstraction Layer}
+  \section{Stack Usage Measurement}
+  \section{XBH-XBD Communication}
+    \subsection{I$^2$C Interface}
+    \subsection{XBH-XBD Protocol}
+    \subsection{General Purpose IO}
+    \subsection{Reset}
+% -----------------------------------------------------------------------------
+\chapter{Board Specific Changes}
+% -----------------------------------------------------------------------------
+  \section{Texas Instruments MSP430}
+    \subsection{Memory Map}
+    \subsection{Flash}
+  \section{Texas Instruments MSP432}
+  \section{Texas Instruments Tiva C}
+  \section{ST Microelectronics Nucleo}
+% -----------------------------------------------------------------------------
+\chapter{Using AES Peripherals}
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+\begin{appendix}
+\chapter{XBH - XBD Protocol}
+\end{appendix}
+
+
+\end{document}
