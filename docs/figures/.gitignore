@@ -1,0 +1,9 @@
+*.aux
+*.log
+*.out
+*.bak
+*.fig.bak
+*.dvi
+*.toc
+.directory
+
