@@ -94,7 +94,10 @@
       \vspace{0.5in}
       \noindent\makebox[\textwidth]{\color{cergpurple}\rule{\paperwidth}{3pt}}
 \vfill
-      {\large\bfseries\@author\par}
+      {\large\bfseries%
+       \begin{tabular}[t]{c}%
+         \@author
+       \end{tabular}\par}%
       {\ifx\@email\@empty\else\large\@email\par\fi}
       \vspace{0.5in}
       \today\par
