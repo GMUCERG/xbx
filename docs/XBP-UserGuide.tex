@@ -26,8 +26,15 @@ drawn by the XBD, amplify its value and pass it on to the XBH for measurement.
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=1]{figures/xxbx-setup-side}
+    \includegraphics[scale=1]{figures/xxbx-side}
     \caption{XXBX Setup with XBH on the bottom followed by XBP in the middle and XBD on top}\label{fig:xxbxsetup}
+  \end{center}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{figures/xbp}
+    \caption{XBP}\label{fig:xbp}
   \end{center}
 \end{figure}
 
@@ -260,6 +267,13 @@ for the different gains are printed on the circuit board. The device under test 
 get its power from the XBD connector (see Fig.~\ref{fig:xbd}). Only pins 1 and 2,
 V$_{CC}$ and GND respectively, have to be used.
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=1]{figures/xbp-no-xbh-connections}
+    \caption{XBP Connections without XBH}\label{fig:noxbh}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
 
 % -----------------------------------------------------------------------------
 \chapter{XXBX Devices under Test (XBD)}\label{sec:xbd}
@@ -279,15 +293,54 @@ Launchpad lights up when the 3.3V are supplied to the left (wrong) pin.
 The \emph{PWR Select} switch can be in any position and won't affect the 
 measurements.
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/ek-lm4f120xl}
+    \caption{TI Stellaris EK-LM4F120XL}\label{fig:stellaris}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
 \subsection{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
 
 The circuit connections are the same as on the TI Stellaris LaunchPad. Please follow
 those instructions. Supply voltage is 3.3V with a maximum current of 300\,mA.
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/ek-tm4c123gxl}
+    \caption{TI TIVA EK-TM4C123GXL}\label{fig:tiva}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
+
 \subsection{TI MSP430F5529 LaunchPad\texttrademark}
 
 For precise current measurements remove all jumpers from the isolation jumper block 
 with the exception of the ground (GND) jumper. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp430f5529lp}
+    \caption{TI MSP-EXP430F5529LP}\label{fig:5529}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
+\subsection{TI MSP430FR5994 LaunchPad\texttrademark}
+
+DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+current of 2.7\,mA not including LEDs or external circuitry.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp430fr5994}
+    \caption{TI MSP-EXP430FR5994}\label{fig:5994}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
 
 \subsection{TI MSP430FR6989 LaunchPad\texttrademark}
 
@@ -295,12 +348,59 @@ For precise current measurements remove all jumpers from the isolation jumper bl
 with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
 current of 2.7\,mA not including LEDs or external circuitry.
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp430fr6968}
+    \caption{TI MSP-EXP430FR6989}\label{fig:6989}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
+\subsection{TI MSP432P401R LaunchPad\texttrademark}
+
+DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+current of 2.7\,mA not including LEDs or external circuitry.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp432p401r}
+    \caption{TI MSP-EXP432P401R}\label{fig:401}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
 \section{ST Microelectronics NUCLEO Boards}
+
+DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+current of 2.7\,mA not including LEDs or external circuitry.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/nucleo-f091rc}
+    \caption{ST Microelectronics Nucleo F091RC}\label{fig:f091rc}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
 
 
 % -----------------------------------------------------------------------------
 \chapter{XBP Assembly}
 This chapter shows the assembly of the XBP. Please follow it step by step. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{figures/xbp-full-top}
+    \caption{Top of Fully Populated XBP}\label{fig:xbp-top}
+  \end{center}
+\end{figure}
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{figures/xbp-full-bottom}
+    \caption{Bottom of Fully Populated XBP}\label{fig:xbp-bottom}
+  \end{center}
+\end{figure}
 
 \section{Indicator LEDs}
 The first thing to assemble are the LEDs \textbf{LED1} for ``Power'' and 
@@ -318,7 +418,7 @@ of the resistors that does not point toward the LEDs with a wire connected to a
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=1]{figures/assembly-led}
+    \includegraphics[scale=0.8]{figures/xbp-leds}
     \caption{Location of LEDs, R5 and R6 on the top of the PCB}
   \end{center}
 \end{figure}
@@ -336,7 +436,7 @@ and continue with \textbf{R7}, \textbf{R12}, and \textbf{R13}.
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=1]{figures/assembly-led}
+    \includegraphics[scale=0.8]{figures/xbp-led-circuit}
     \caption{Location of LED circuit: Q1, Q2, R7, R12, and R13 on the bottom of the PCB}
   \end{center}
 \end{figure}
@@ -362,7 +462,7 @@ of \textbf{R1} has the desired voltage.
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=1]{figures/assembly-led}
+    \includegraphics[scale=0.8]{figures/xbp-ina225}
     \caption{Location of the CSM circuit: U1, IC1, R1, R2, C1, C2, and C3 on the top of the PCB}
   \end{center}
 \end{figure}
@@ -378,7 +478,7 @@ followed by the resistors \textbf{R8}, \textbf{R9}, \textbf{R10}, and \textbf{R1
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=1]{figures/assembly-led}
+    \includegraphics[scale=1]{figures/xbp-i2c-circuit}
     \caption{Location of the I$^2$C pull-up: R3, R4 and level shifter: Q3--Q8 and R8--R11 on the bottom of the PCB}
   \end{center}
 \end{figure}
