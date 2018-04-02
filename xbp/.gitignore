@@ -23,6 +23,8 @@
 *.dri
 *.cmp
 *.xln
+*.csv
+*.rep
 XBP.b#?
 XBP.s#?
 

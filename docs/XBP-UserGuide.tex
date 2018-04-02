@@ -2,6 +2,10 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 
+\newcommand\thead[1]{\multicolumn{1}{c}{\textbf{#1}}}
+\newcommand\theadr[1]{\multicolumn{1}{c|}{\textbf{#1}}}
+
+
 \begin{document}
 
 \title{XXBX Power Shim -- XBP}
@@ -293,24 +297,23 @@ Launchpad lights up when the 3.3V are supplied to the left (wrong) pin.
 The \emph{PWR Select} switch can be in any position and won't affect the 
 measurements.
 
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.6]{figures/ek-lm4f120xl}
-    \caption{TI Stellaris EK-LM4F120XL}\label{fig:stellaris}
-  \end{center}
-\vspace{-1ex}
-\end{figure}
-
 \subsection{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
 
 The circuit connections are the same as on the TI Stellaris LaunchPad. Please follow
 those instructions. Supply voltage is 3.3V with a maximum current of 300\,mA.
 
 \begin{figure}[ht]
-  \begin{center}
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.6]{figures/ek-lm4f120xl}
+    \caption{TI Stellaris EK-LM4F120XL}\label{fig:stellaris}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \centering
     \includegraphics[scale=0.6]{figures/ek-tm4c123gxl}
     \caption{TI TIVA EK-TM4C123GXL}\label{fig:tiva}
-  \end{center}
+  \end{minipage}
 \vspace{-1ex}
 \end{figure}
 
@@ -594,6 +597,51 @@ have to mount if you plan on connecting an external XBD.
   \end{center}
 \end{figure}
 \chapter{Parts List}\label{sec:parts}
+
+\begin{table}[ht]
+  \rotatebox{90}{\scriptsize%
+  \setlength{\tabcolsep}{2pt}
+  \begin{tabular}{r|ccc|rlllp{2.5cm}p{6.5cm}}
+     &\multicolumn{3}{c|}{\textbf{Option}} &&&&&&\\
+\theadr{Part} & \thead{1} & \thead{2} & \theadr{3} & \thead{Value} & \thead{Package} & \thead{Device} & \thead{Mfr.\#} & \thead{Manufacturer} & \thead{Description}  \\ \hline
+A1   & X & X &   & XBHCon &2* 2x10 & Pin Strip & 929852-01-10-RB & 3M & Headers  \&  Wire Housings 20/2R/BM SKT/.100 STR/.125/30AVE/ROHS    \\
+A2   & X & X &   & XBDCon &2* 2x10 & Pin Header & 67997-272HLF & FCI / Amphenol & Headers  \&  Wire Housings Breakaway Header 72   \\
+C1   & X & X & X & 0.1uF & C0603 & Capacitor & GRM155R61A104JA01D & Murata Electronics & Multilayer Ceramic Capacitors    \\
+C2   & X & X & X & 0.1uF & C0603 & Capacitor & GRM155R61A104JA01D & Murata Electronics & Multilayer Ceramic Capacitors    \\
+C3   & X & X & X & 1uF & C0603 & Capacitor & TMK107B7105KA-T & Taiyo Yuden & Multilayer Ceramic Capacitors 25V X7R +/-10\%  \\
+IC1  &   &   &   & 3.3V 250mA & SOT89 & LDO Regulator & MCP1702T-3302E/MB & Microchip Technology & LDO Voltage Regulators LDO w/ Low Quiescent  \\
+JP1  & X & X & X & Power & 1X06/90 & Pin Header & 61303611021 & Wurth Electronics & Headers  \&  Wire Housings WR-PHD 2.54mm Hdr 36P Single RA Gold   \\
+JP2  & X & X &   & XBD & 2X04/90 & Pin Header & 75867-132LF & FCI / Amphenol & Headers  \&  Wire Housings 8P DR R/S SHRD HDR 30 microinch gold   \\
+JP5  &   &   & X & Gain & 2X03 & Pin Header & 67997-272HLF & FCI / Amphenol & Headers  \&  Wire Housings Breakaway Header 72  \\
+LED1 & X & X & X & Power & 0603 & LED, red & APT1608EC & Kingbright & Standard LEDs - SMD HI EFF RED WTR CLR   \\
+LED2 & X & X &   & Activity & 0603 & LED, green & AP1608SGC & Kingbright & Standard LEDs - SMD GREEN WATER CLEAR   \\
+Q1   & X & X &   & BSS84 & SOT23 & P-Channel FET & BSS84P H6327 & Infineon & MOSFET P-Ch -60V -170mA SOT-23-3   \\
+Q2   & X & X &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q3   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q4   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q5   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q6   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q7   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+Q8   & X &   &   & BSS123 & SOT23 & N-Channel FET & BSS123LT1G & ON Semiconductor & MOSFET 100V 170mA N-Channel   \\
+R1   & X & X &   & 1R & R1210 & Resistor & SR732BTTD1R00D & KOA Speer & Current Sense Resistors - SMD 1 OHM .5\%   \\
+R2   &   &   &   & option & R0805 & Resistor &  &  &   \\
+R3   & X & X &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R4   & X & X &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R5   & X & X & X & 1K & R0603 & Resistor & RC0603FR-071KL  & Yageo & Thick Film Resistors - SMD 1K OHM 1\%    \\
+R6   & X & X &   & 470 & R0603 & Resistor & RC0603FR-07470RL & Yaego & Thick Film Resistors - SMD 470 OHM 1\%    \\
+R7   & X & X &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R8   & X &   &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R9   & X &   &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R10  & X &   &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R11  & X &   &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R12  & X & X &   & 10k & R0603 & Resistor & RC0603FR-0710KL & Yageo & Thick Film Resistors - SMD 10K OHM 1\%   \\
+R13  & X & X &   & 22 & R0603 & Resistor & RC0603FR-0722RL & Yaego & Thick Film Resistors - SMD 22 OHM 1\%   \\
+U1   & X & X & X & INA225 & VSSOP-8 & CSM & INA225AIDGKT & Texas Instruments & Current Sense Amplifiers 36V Bidir 0-Drift \\
+X1   &   &   & X & SMA & End Launch & SMA 50 Ohm Jack & 142-0701-801  & Johnson / Cinch Connectivity Solutions  & RF Connectors / Coaxial Connectors PC END MT JCK GLD .062 BOARD THICK    \\ \hline
+A3   &   &   &   & XBDCab & 2* 2x 4P & RCPL  & 71600-008LF & FCI / Amphenol & Headers  \&  Wire Housings 2X4P SNGL BEAM RCPL 30 microinch gold   \\
+1    &   &   &   & 1ft & 10 Cond & Ribbon & 3365/10-CUT-LENGTH & 3M & Flat Cables .050 10 COND. 28AWG ROUND 1PC=1FT   \\
+  \end{tabular}}
+\end{table}
 
 \end{appendix}
 
