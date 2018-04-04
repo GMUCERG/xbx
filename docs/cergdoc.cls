@@ -24,9 +24,11 @@
 % Color Definitions
 \definecolor{cergpurple}{HTML}{3D0473}
 \definecolor{cergpink}{HTML}{802391}
-\definecolor{cergblue}{RGB}{100,116,172}
+\definecolor{cergblue}{HTML}{6F80BD}
 \definecolor{cerglightblue}{HTML}{8C9EE5}
 \definecolor{cerggold}{HTML}{F6C74F}
+\definecolor{cerggreen}{HTML}{026830}
+\definecolor{cergred}{HTML}{CF1A18}
 
 % Header and Footer Style
 %\renewcommand{\footrulewidth}{0.4pt}

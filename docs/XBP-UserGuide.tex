@@ -1,12 +1,26 @@
 \documentclass[twoside,11pt]{cergdoc}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{listings}
 
 \newcommand\thead[1]{\multicolumn{1}{c}{\textbf{#1}}}
 \newcommand\theadr[1]{\multicolumn{1}{c|}{\textbf{#1}}}
 
 
 \begin{document}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=C,
+  otherkeywords={bis.b,bis.w,bic.b,bic.w,bit.b,bit.w,mov.b,mov.w,dec.b,dec.w,jnz,jmp},
+  commentstyle=\color{cerglightblue},
+  keywordstyle=\color{cergpink},
+  numberstyle=\color{cergpred},
+  stringstyle=\color{cergblue},
+  identifierstyle=\color{cergpurple}
+}
+
 
 \title{XXBX Power Shim -- XBP}
 \subtitle{XBP User Guide v1.0}
@@ -282,8 +296,149 @@ V$_{CC}$ and GND respectively, have to be used.
 % -----------------------------------------------------------------------------
 \chapter{XXBX Devices under Test (XBD)}\label{sec:xbd}
 % -----------------------------------------------------------------------------
+XXBX supports several microcontroller boards as XBD. Table~\ref{tab:xbd}
+describes briefly the features of each supported board. The sections below
+contain instructions on how to modify the boards if necessary for use as XBDs.
+
+\begin{table}[ht]
+    \centering%
+    \caption{Devices for Benchmarking (XBD) Supported by XXBX}\label{tab:xbd}
+    {\scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l|c|ll|rrc|rr|r}%
+    \theadr{Board}   & \theadr{Manuf.} & \thead{CPU}&\theadr{ISA}& \thead{Bus} &\thead{f}&\theadr{HW}& \thead{ROM} & \theadr{RAM} &\thead{Price}\\ \hline
+%    Homemade         & Atmel     & ATmega1284P    &  AVR        &  8-bit &  20\,MHz &     &     &     &  \$10.00 \\
+    MSP-EXP430F5529LP& TI        & MSP430F        &  MSP430X    & 16-bit &  25\,MHz &     &  128kB &  10kB &  \$12.99 \\
+    MSP-EXP430FR5994 & TI        & MSP430FR       &  MSP430X    & 16-bit &  16\,MHz & AES, LEA &  256kB &   8kB &  \$15.99 \\
+    MSP-EXP432P401R  & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit &  48\,MHz & AES &  256kB &  64kB &  \$12.99 \\
+    EK-TM4C123GXL    & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit &  80\,MHz &     &  256kB &  32kB &  \$12.99 \\ 
+    EK-TM4C129EXL    & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit & 120\,MHz & AES & 1024kB & 256kB &  \$24.99 \\ 
+    NUCLEO-F091RC    & STM       & ARM Cortex M0  &  ARMv6-M    & 32-bit &  48\,MHz &     &  256kB &  32kB &  \$10.33 \\
+    NUCLEO-F103RB    & STM       & ARM Cortex M3  &  ARMv7-M    & 32-bit &  72\,MHz &     &  128kB &  20kB &  \$10.33 \\
+%    chipKIT uC32     & Microchip & PIC32MX3xx     &  MIPS32 M4K & 32-bit &  80\,MHz &     &     &     &  \$29.95 \\
+    \end{tabular}%
+    }\vspace{-2ex}%
+\end{table}
+
 
 \section{Texas Instruments LaunchPads}
+
+\subsection{TI MSP430F5529 LaunchPad\texttrademark}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp430f5529lp}
+    \caption{TI MSP-EXP430F5529LP}\label{fig:5529}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
+\noindent The supply voltage $V_{CC}D$ is 3.3\,V and provided through the BoosterPack header 
+from the XBP.
+For precise current measurements remove all jumpers from the isolation jumper block 
+between the programmer and the target MSP with the exception of the ground (GND) jumper. 
+The device specific code makes sure there are no floating I/Os. 
+Ports P4.1 (SDA), P4.2 (SCL), P2.0 (TF) are used for communicating with the XBH.
+The following Ports are used by XBH when more XBPs are used, hence they can't be outputs on XBD
+and have to be configured as inputs (default): 
+P1.5, P1.4, P1.3, P1.2, 
+P2.5, P2.4, P2.3, 
+P3.7, P3.6, 
+P4.0, 
+P6.2, P6.1, P6.0, 
+P8.2, P8.1. 
+XBH will assign logic values to these ports.
+All other ports should be outputs driving a logic 0. 
+Furthermore the USB LDO has to be disabled.
+Below is the code to initialize the ports and USB device
+accordingly. 
+This code is part of the device specific bootloader code.
+
+{\small
+\begin{lstlisting}
+// Port Configuration
+P1OUT = 0x00; P2OUT = 0x00; P3OUT = 0x00; P4OUT = 0x00; P5OUT = 0x00;
+P6OUT = 0x00; P7OUT = 0x00; P8OUT = 0x00; PJOUT = 0x00;
+P1DIR = 0xC3; P2DIR = 0xC7; P3DIR = 0x3F; P4DIR = 0xFE; P5DIR = 0xFF;
+P6DIR = 0xF8; P7DIR = 0xFF; P8DIR = 0xF9; PJDIR = 0xFF;
+// Disable VUSB LDO and SLDO
+USBKEYPID  = 0x9628;            // enable access to USB config
+USBPWRCTL &= ~(SLDOEN+VUSBEN);  // disable the VUSB LDO and the SLDO
+USBKEYPID  = 0x9600;            // disable access to USB config   
+\end{lstlisting}
+}
+
+
+\subsection{TI MSP430FR5994 LaunchPad\texttrademark}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp430fr5994}
+    \caption{TI MSP-EXP430FR5994}\label{fig:5994}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
+\noindent The supply voltage $V_{CC}D$ is 3.3\,V and provided through the BoosterPack header 
+from the XBP.
+For precise current measurements 
+disconnect the Super Cap by removing jumper J8, make sure that no microSD 
+memory card is inserted and
+remove all jumpers from the isolation jumper block 
+between the programmer and the target MSP with the exception of the ground (GND) jumper. 
+The device specific code makes sure there are no floating I/Os. 
+Ports P7.0 (SDA), P7.1 (SCL), P5.7 (TF) are used for communicating with the XBH.
+The following Ports are used by XBH when more XBPs are used, hence they can't be outputs on XBD
+and have to be configured as inputs (default): 
+P2.6,
+P3.7, P3.6, P3.5, P3.4, 3.2, P3.1, P3.0,
+P4.7, P4.3, P4.2, P4.1,
+P7.3,
+P8.2, P8.1,
+XBH will assign logic values to these ports.
+All other ports should be outputs driving a logic 0. 
+Below is the code to initialize the ports and USB device
+accordingly. 
+This code is part of the device specific bootloader code.
+
+{\small
+\begin{lstlisting}
+// Port Configuration --- to be verified
+P1OUT = 0x00; P2OUT = 0x00; P3OUT = 0x00; P4OUT = 0x00; P5OUT = 0x00;
+P6OUT = 0x00; P7OUT = 0x00; P8OUT = 0x00; PJOUT = 0x00;
+P1DIR = 0xFF; P2DIR = 0xBF; P3DIR = 0x04; P4DIR = 0x71; P5DIR = 0xFF;
+P6DIR = 0xFF; P7DIR = 0xF7; P8DIR = 0xF9; PJDIR = 0xFF;
+\end{lstlisting}
+}
+
+
+%\subsection{TI MSP430FR6989 LaunchPad\texttrademark}
+%
+%For precise current measurements remove all jumpers from the isolation jumper block 
+%with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+%current of 2.7\,mA not including LEDs or external circuitry.
+%
+%\begin{figure}[ht]
+%  \begin{center}
+%    \includegraphics[scale=0.6]{figures/msp-exp430fr6968}
+%    \caption{TI MSP-EXP430FR6989}\label{fig:6989}
+%  \end{center}
+%\vspace{-1ex}
+%\end{figure}
+
+\subsection{TI MSP432P401R LaunchPad\texttrademark}
+
+DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
+with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
+current of 2.7\,mA not including LEDs or external circuitry.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/msp-exp432p401r}
+    \caption{TI MSP-EXP432P401R}\label{fig:401}
+  \end{center}
+\vspace{-1ex}
+\end{figure}
+
 
 \subsection{TI Stellaris\textregistered~LM4F120 LaunchPad}
 
@@ -317,61 +472,6 @@ those instructions. Supply voltage is 3.3V with a maximum current of 300\,mA.
 \vspace{-1ex}
 \end{figure}
 
-
-\subsection{TI MSP430F5529 LaunchPad\texttrademark}
-
-For precise current measurements remove all jumpers from the isolation jumper block 
-with the exception of the ground (GND) jumper. 
-
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.6]{figures/msp-exp430f5529lp}
-    \caption{TI MSP-EXP430F5529LP}\label{fig:5529}
-  \end{center}
-\vspace{-1ex}
-\end{figure}
-
-\subsection{TI MSP430FR5994 LaunchPad\texttrademark}
-
-DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
-with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
-current of 2.7\,mA not including LEDs or external circuitry.
-
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.6]{figures/msp-exp430fr5994}
-    \caption{TI MSP-EXP430FR5994}\label{fig:5994}
-  \end{center}
-\vspace{-1ex}
-\end{figure}
-
-\subsection{TI MSP430FR6989 LaunchPad\texttrademark}
-
-For precise current measurements remove all jumpers from the isolation jumper block 
-with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
-current of 2.7\,mA not including LEDs or external circuitry.
-
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.6]{figures/msp-exp430fr6968}
-    \caption{TI MSP-EXP430FR6989}\label{fig:6989}
-  \end{center}
-\vspace{-1ex}
-\end{figure}
-
-\subsection{TI MSP432P401R LaunchPad\texttrademark}
-
-DUMMY TEXT For precise current measurements remove all jumpers from the isolation jumper block 
-with the exception of the ground (GND) jumper. Supply voltage is 3.3V with a maximum 
-current of 2.7\,mA not including LEDs or external circuitry.
-
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.6]{figures/msp-exp432p401r}
-    \caption{TI MSP-EXP432P401R}\label{fig:401}
-  \end{center}
-\vspace{-1ex}
-\end{figure}
 
 \section{ST Microelectronics NUCLEO Boards}
 
@@ -598,11 +698,12 @@ have to mount if you plan on connecting an external XBD.
 \end{figure}
 \chapter{Parts List}\label{sec:parts}
 
-\begin{table}[ht]
-  \rotatebox{90}{\scriptsize%
+\begin{sidewaystable}[ht]
+  \caption{XBP Bill of Materials}\label{tab:xbpbom}
+  \scriptsize%
   \setlength{\tabcolsep}{2pt}
   \begin{tabular}{r|ccc|rlllp{2.5cm}p{6.5cm}}
-     &\multicolumn{3}{c|}{\textbf{Option}} &&&&&&\\
+     &\multicolumn{3}{c|}{\textbf{Option\footnotemark}} &&&&&&\\
 \theadr{Part} & \thead{1} & \thead{2} & \theadr{3} & \thead{Value} & \thead{Package} & \thead{Device} & \thead{Mfr.\#} & \thead{Manufacturer} & \thead{Description}  \\ \hline
 A1   & X & X &   & XBHCon &2* 2x10 & Pin Strip & 929852-01-10-RB & 3M & Headers  \&  Wire Housings 20/2R/BM SKT/.100 STR/.125/30AVE/ROHS    \\
 A2   & X & X &   & XBDCon &2* 2x10 & Pin Header & 67997-272HLF & FCI / Amphenol & Headers  \&  Wire Housings Breakaway Header 72   \\
@@ -640,8 +741,11 @@ U1   & X & X & X & INA225 & VSSOP-8 & CSM & INA225AIDGKT & Texas Instruments & C
 X1   &   &   & X & SMA & End Launch & SMA 50 Ohm Jack & 142-0701-801  & Johnson / Cinch Connectivity Solutions  & RF Connectors / Coaxial Connectors PC END MT JCK GLD .062 BOARD THICK    \\ \hline
 A3   &   &   &   & XBDCab & 2* 2x 4P & RCPL  & 71600-008LF & FCI / Amphenol & Headers  \&  Wire Housings 2X4P SNGL BEAM RCPL 30 microinch gold   \\
 1    &   &   &   & 1ft & 10 Cond & Ribbon & 3365/10-CUT-LENGTH & 3M & Flat Cables .050 10 COND. 28AWG ROUND 1PC=1FT   \\
-  \end{tabular}}
-\end{table}
+  \end{tabular}
+  \setcounter{footnote}{0}
+  \footnotetext{\footnotemark Option 1: Supports XBD using any $V_{CC}D$, Option 2: Supports only XBD with $V_{CC}D = 3.3$\,V, 
+   Option 3: no XBH}
+\end{sidewaystable}
 
 \end{appendix}
 
