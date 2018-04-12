@@ -25,6 +25,8 @@
 *.xln
 *.csv
 *.rep
+*.cmp
 XBP.b#?
 XBP.s#?
-
+*.b#?
+*.s#?
