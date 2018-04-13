@@ -6,6 +6,7 @@
 
 \newcommand\thead[1]{\multicolumn{1}{c}{\textbf{#1}}}
 \newcommand\theadr[1]{\multicolumn{1}{c|}{\textbf{#1}}}
+\newcommand{\ITwoC}{I\textsuperscript{2}C }
 
 
 \begin{document}
@@ -135,7 +136,7 @@ voltages.
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=1]{figures/voltagelevel}
-    \caption{Voltage Level Shifter for I$^2$C}\label{fig:voltagelevel}
+    \caption{Voltage Level Shifter for \ITwoC}\label{fig:voltagelevel}
   \end{center}
 \end{figure}
 
@@ -149,9 +150,9 @@ tied to the timer flag (TF) signal of the XBD but driven by a field effect trans
 Because of its location in an XXBX setup, we were able to integrate additional 
 functionality which leads to a cleaner setup.
 
-\subsection{I$^2$C Pull-Up Resistors}
-The I$^2$C bus requires pull-up resistors. The XBH does not have pull-up resistors on 
-its I$^2$C pins. Only some XBDs either have these pull-up
+\subsection{\ITwoC Pull-Up Resistors}
+The \ITwoC bus requires pull-up resistors. The XBH does not have pull-up resistors on 
+its \ITwoC pins. Only some XBDs either have these pull-up
 resistors or can be configured to use internal pull-up resistors. We therefore decided
 to provide a place for pull-up resistors on the XBP. They can be put on the board 
 depending on the users needs. They are marked in Fig\,\ref{fig:voltagelevel} as R3 and R4.
@@ -200,7 +201,7 @@ recomputed using \eqref{eq:ires} and \eqref{eq:imax} respectively.
 
 \section{Supply Voltages}
 The XBP uses three voltage supplies. The first supply, called $\mathrm{V_{CC}H}$
-uses 3.3\,V from the XBH and powers the I$^2$C pull-up resistors, the activity LED, 
+uses 3.3\,V from the XBH and powers the \ITwoC pull-up resistors, the activity LED, 
 and the level shifters.
 The second supply, called $\mathrm{V_{CC}P}$ uses 5\,V and powers the current
 sense amplifier of the XBP and the power LED. 
@@ -269,9 +270,9 @@ The FETs \textbf{Q3} through \textbf{Q8} and the resistors \textbf{R8}  through 
 Please make sure that solder jumpers \textbf{SJ1}, \textbf{SJ2}, and \textbf{SJ3} 
 are \emph{open}. $\mathrm{V_{CC}D}$ can be higher or lower than 3.3\,V.
 
-\section{I$^2$C Pull-Up Resistors}\label{sec:i2cr}
-The XBP can provide the pull-up resistors for I$^2$C. These are needed only once on an 
-I$^2$C bus. We suggest that you populate \textbf{R3} and \textbf{R4} using 
+\section{\ITwoC Pull-Up Resistors}\label{sec:i2cr}
+The XBP can provide the pull-up resistors for \ITwoC. These are needed only once on an 
+\ITwoC bus. We suggest that you populate \textbf{R3} and \textbf{R4} using 
 10\,kOhm resistors (size: 0604) on the first XBP (XBP0).
 
 \section{Usage without XBH}\label{sec:noXBH}
@@ -570,9 +571,9 @@ of \textbf{R1} has the desired voltage.
   \end{center}
 \end{figure}
 
-\section{I$^2$C Pull-Up Resistors and Level Shifting}
+\section{\ITwoC Pull-Up Resistors and Level Shifting}
 
-If you want the XBP to pull-up the I$^2$C bus solder \textbf{R3} and \textbf{R4}
+If you want the XBP to pull-up the \ITwoC bus solder \textbf{R3} and \textbf{R4}
 as discussed in section~\ref{sec:i2cr}. 
 
 If you want to use an XBD whose $V_{CC}D \ne 3.3\,\mathrm{V}$ solder first the
@@ -582,7 +583,7 @@ followed by the resistors \textbf{R8}, \textbf{R9}, \textbf{R10}, and \textbf{R1
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=1]{figures/xbp-i2c-circuit}
-    \caption{Location of the I$^2$C pull-up: R3, R4 and level shifter: Q3--Q8 and R8--R11 on the bottom of the PCB}
+    \caption{Location of the \ITwoC pull-up: R3, R4 and level shifter: Q3--Q8 and R8--R11 on the bottom of the PCB}
   \end{center}
 \end{figure}
 
@@ -629,9 +630,9 @@ have to mount if you plan on connecting an external XBD.
     \caption{Pin Configuration of Boosterpack Connector for XBH}
     \begin{tabular}{rlll}
       Connector & Pin  & Net         & Comment  \\ \hline
-       J1 & 1  & +3V3      & Supply Voltage $\mathrm{V_{CC}H}$ from XBH for I$^2$C pull-up resistors on XBP0 \\
-       J1 & 9  & SCL       & I$^2$C Serial Clock  \\
-       J1 & 10 & SDA       & I$^2$C Serial Data \\ 
+       J1 & 1  & +3V3      & Supply Voltage $\mathrm{V_{CC}H}$ from XBH for \ITwoC pull-up resistors on XBP0 \\
+       J1 & 9  & SCL       & \ITwoC Serial Clock  \\
+       J1 & 10 & SDA       & \ITwoC Serial Data \\ 
        J3 & 21 & +5V       & Supply Voltage $\mathrm{V_{CC}P}$ from XBH for the XBP0 \\ \hline
 
        J3 & 23 & PWR0      & Analog signal of current consumption of XBD0 from XBP0\\
@@ -665,8 +666,8 @@ have to mount if you plan on connecting an external XBD.
     \begin{tabular}{rlll}
       Connector & Pin  & Net         & Comment  \\ \hline
        J1 & 1  & +3V3      & Supply Voltage, current is measured by XBP \\
-       J1 & 9  & SCL       & I$^2$C Serial Clock  \\
-       J1 & 10 & SDA       & I$^2$C Serial Data \\
+       J1 & 9  & SCL       & \ITwoC Serial Clock  \\
+       J1 & 10 & SDA       & \ITwoC Serial Data \\
        J2 & 16 & RST       & Reset of XBD \\ 
        J2 & 19 & TF        & Timer Flag to start/stop execution timer on XBH \\
        J2 & 20 & GND       & \\
