@@ -1,10 +1,27 @@
 \documentclass[twoside,11pt]{cergdoc}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{listings}
+\usepackage{longtable}
 
+\newcommand\thead[1]{\multicolumn{1}{c}{\textbf{#1}}}
+\newcommand\theadr[1]{\multicolumn{1}{c|}{\textbf{#1}}}
 \newcommand{\ITwoC}{I\textsuperscript{2}C }
 
+
 \begin{document}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=C,
+  otherkeywords={bis.b,bis.w,bic.b,bic.w,bit.b,bit.w,mov.b,mov.w,dec.b,dec.w,jnz,jmp},
+  commentstyle=\color{cerglightblue},
+  keywordstyle=\color{cergpink},
+  numberstyle=\color{cergpred},
+  stringstyle=\color{cergblue},
+  identifierstyle=\color{cergpurple}
+}
+
 
 \title{XXBX Device Under Test -- XBD}
 \subtitle{XBD User Guide v1.0}
@@ -359,6 +376,45 @@ was fixed in the XBS rewrite.
 % -----------------------------------------------------------------------------
 \begin{appendix}
 \chapter{XBH - XBD Protocol}
+%\begin{table}\centering%
+  \begin{longtable}{llll}
+    \caption{Commands of the XBH --- XBD Protocol}\label{tab:xbh-xbd} \\ \hline
+    \endfirsthead
+    \caption{(continued)} \\ \hline
+    \endhead
+      \multicolumn{2}{c}{\textbf{Requests understood by bootloader}} & \multicolumn{2}{c}{\textbf{Responses}}\\ 
+      \thead{CMD} & \thead{Functionality}               & \thead{OK} & \thead{Failed} \\ \hline 
+      XBDpfr & Program Flash Request                        & XBDpfo & XBDpff \\
+      XBDfdr & Flash Download Request                       & XBDpfo & XBDpff \\
+      XBDsar & Start Application Request                    &        &        \\
+      XBDvir & Version Information Request                  & XBDblo &        \\
+      XBDtcr & Timing Calibration Request                   & XBDtco &        \\
+      XBDtrr & Target Revision Request                      & XBDtro &        \\
+      XBDlor & LOopback Request                             & XBDloo &        \\ \hline
+
+      \multicolumn{2}{c}{\textbf{Requests understood by AppFramework}} & \multicolumn{2}{c}{\textbf{Responses}}\\ 
+      \thead{CMD} & \thead{Functionality}               & \thead{OK} & \thead{Failed} \\ \hline 
+      XBDppr & Program Parameter Request                    & XBDppo & XBDppf \\
+      XBDpdr & Program Download Request                     & XBDpdo & XBDpdf \\
+      XBDurr & Upload Result Request                        & XBDuro & XBDurf \\
+      XBDrdr & Result Data Request                          & XBDrdo & XBDurf \\
+      XBDexr & EXecute Request                              & XBDexo & XBDexf \\
+      XBDccr & Checksum Compute Request                     & XBDcco & XBDccf \\
+      XBDsbr & Switch to Bootloader Request                 &        &        \\
+      XBDvir & Version Information Request                  & XBDafo &        \\
+      XBDtcr & Timing Calibration Request                   & XBDtco &        \\
+      XBDsur & Stack Usage Request                          & XBDsuo &        \\ \hline
+      
+      \multicolumn{2}{c}{\textbf{Common Responses}}         &        &        \\ 
+      \thead{CMD} & \thead{Functionality}                   &        &        \\ \hline 
+      XBDunk & UNKnown command                              &        &        \\ 
+      XBDcrc & CRC error                                    &        &        \\
+      XBDfdo & -- Not Used --                               &        &        \\
+      XBDfdf & -- Not Used --                               &        &        \\ \hline
+      
+  \end{longtable}
+%\end{table}
+
 \end{appendix}
 
 
