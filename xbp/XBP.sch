@@ -10247,7 +10247,6 @@ www.irf.com&lt;p&gt;
 <part name="A1" library="Public_BP_Library" deviceset="HEADER4X10-BOOSTERPACK" device="" value="XBHCon"/>
 <part name="U3" library="Public_BP_Library" deviceset="SILK_3V3_TAG" device=""/>
 <part name="A2" library="Public_BP_Library" deviceset="HEADER4X10-BOOSTERPACK" device="" value="XBDCon"/>
-<part name="U4" library="Public_BP_Library" deviceset="SILK_3V3_TAG" device=""/>
 <part name="U1" library="ina225" deviceset="INA225AIDGKR" device="" value="INA225"/>
 <part name="R1" library="resistor" deviceset="R-US_" device="R1210" value="1R"/>
 <part name="R2" library="resistor" deviceset="R-US_" device="R0805" value="option"/>
@@ -10316,7 +10315,7 @@ www.irf.com&lt;p&gt;
 <text x="208.28" y="106.68" size="2.54" layer="97" ratio="12" rot="R90">XBD Side</text>
 <text x="149.86" y="30.48" size="3.81" layer="121">XXBX Power Shim - XBP</text>
 <text x="149.86" y="25.4" size="2.54" layer="121">cryptography.gmu.edu</text>
-<text x="236.22" y="7.62" size="2.54" layer="121">rev 2.0</text>
+<text x="236.22" y="7.62" size="2.54" layer="121">rev 2.1</text>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="0" y="0" smashed="yes"/>
@@ -10324,7 +10323,6 @@ www.irf.com&lt;p&gt;
 <instance part="A1" gate="G$1" x="121.92" y="157.48"/>
 <instance part="U3" gate="G$1" x="109.22" y="170.18"/>
 <instance part="A2" gate="G$1" x="121.92" y="111.76"/>
-<instance part="U4" gate="G$1" x="109.22" y="124.46"/>
 <instance part="U1" gate="A" x="157.48" y="68.58"/>
 <instance part="R1" gate="G$1" x="121.92" y="73.66" rot="R180"/>
 <instance part="R2" gate="G$1" x="121.92" y="81.28" rot="R180"/>
@@ -10860,6 +10858,15 @@ www.irf.com&lt;p&gt;
 <pinref part="JP1" gate="A" pin="6"/>
 <wire x1="55.88" y1="73.66" x2="55.88" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="73.66" x2="55.88" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="JP2" gate="A" pin="4"/>
+<wire x1="20.32" y1="116.84" x2="48.26" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="116.84" x2="48.26" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="109.22" x2="58.42" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="109.22" x2="58.42" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="78.74" x2="55.88" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="78.74" x2="55.88" y2="73.66" width="0.1524" layer="91"/>
+<junction x="55.88" y="73.66"/>
+<label x="25.4" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TF0" class="0">
