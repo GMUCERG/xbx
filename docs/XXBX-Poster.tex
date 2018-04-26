@@ -118,11 +118,26 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
                   collection of algorithm primitive implementations.
               \item Verifies correct execution of implementations and times cycles
                   required per byte processed.
-              \item Does not measure ROM and RAM usage or power consumption.
+%              \item Does not measure ROM and RAM usage or power consumption.
               \begin{center}
                   \url{http://bench.cr.yp.to/supercop.html}
               \end{center}
             \end{itemize}
+        \end{itemize}
+        \begin{center}
+        \begin{minipage}[t]{0.9\linewidth}  
+        \setbeamercolor{padding}{fg=white, bg=cergbg1}
+        \begin{beamercolorbox}[rounded=true]{padding}
+          \textbf{Missing Features}\small
+          \begin{itemize}
+            \item Does not measure ROM usage, RAM usage, power consumption
+            \item Does not support cross-compilation
+            \item Does not support microcontrollers
+          \end{itemize}
+        \end{beamercolorbox}
+        \end{minipage}
+        \end{center}
+        \begin{itemize}
           \item XBX
             \begin{itemize}
               \item eXternal Benchmarking eXtension (XBX) to SUPERCOP
@@ -131,44 +146,58 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
               \item Low cost hardware and software
               \item Our contribution to original XBX was to port it to the MSP430
                   platform and provide results for SHA-3 finalists.
-              \item Measures ROM and RAM usage. Does not measure power consumption.
+              \item Measures ROM and RAM usage. %Does not measure power consumption.
             \end{itemize}
         \end{itemize}
-
         \begin{center}
         \begin{minipage}[t]{0.9\linewidth}  
         \setbeamercolor{padding}{fg=white, bg=cergbg1}
         \begin{beamercolorbox}[rounded=true]{padding}
-          \textbf{Missing Features}
+          \textbf{Missing Features}\small
           \begin{itemize}
-            \item ROM Usage
-            \item RAM Usage
-            \item Power Consumption
+            \item Does not measure power consumption
+            \item Harness device (ATmega32) limits future expansion
           \end{itemize}
         \end{beamercolorbox}
         \end{minipage}
         \end{center}
+
       \end{block}
 %-----------------------------------------------------------------------------------
-      \begin{block}{Metrics}
-        {\large\textbf{Throughput}}
+%      \begin{block}{Metrics}
+%        {\large\textbf{Throughput}}
+%        \begin{itemize}
+%          \item Measured in cycles per byte
+%        \end{itemize}
+%        {\large\textbf{RAM Usage}}
+%        \begin{itemize}
+%          \item Item 
+%        \end{itemize}
+%        {\large\textbf{ROM Usage}}
+%        \begin{itemize}
+%          \item Item 
+%        \end{itemize}
+%        {\large\textbf{Power Consumption}}
+%        \begin{itemize}
+%          \item Item 
+%        \end{itemize}
+%      \end{block}
+%        
+% ---------------------------------------------------------------------------
+      \begin{block}{XXBX}
+        {e\color{red}X}tended e{\color{red}X}ternal {\color{red}B}enchmarking 
+        e{\color{red}X}tention extends the XBX by:% 
         \begin{itemize}
-          \item Item 
+          \item Added power measurement
+          \item Added support for Authenticated Encryption with Associated Data (AEAD) functions
+          \item Replaced harness with more powerful device running FreeRTOS
+          \item Rewrote software in Python 3 (was bash and perl)
+          \item Result storage now in SQLite database
         \end{itemize}
-        {\large\textbf{RAM Usage}}
-        \begin{itemize}
-          \item Item 
-        \end{itemize}
-        {\large\textbf{ROM Usage}}
-        \begin{itemize}
-          \item Item 
-        \end{itemize}
-        {\large\textbf{Power Consumption}}
-        \begin{itemize}
-          \item Item 
-        \end{itemize}
+        \begin{center}
+          \includegraphics[scale=1.5]{../figures/xxbx-tilted}
+        \end{center} 
       \end{block}
-        
 %---------------------------------------------------------------------------------
     \end{column}
 % ---------------------------------------------------------------------------
@@ -180,17 +209,6 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
    
 % ---------------------------------------------------------------------------
       
-% ---------------------------------------------------------------------------
-      \begin{block}{XXBX}
-%        {e\color{red}X}tended e{\color{red}X}ternal {\color{red}B}enchmarking 
-%        e{\color{red}X}tention extends the XBX by:% 
-%        \begin{itemize}
-%          \item List of differences to XBX
-%        \end{itemize}
-        \begin{center}
-          \includegraphics[scale=1.5]{../figures/xxbx-tilted}
-        \end{center} 
-      \end{block}
 % ---------------------------------------------------------------------------
       \begin{block}{Main Components of XXBX}
         \begin{center}
@@ -241,8 +259,23 @@ whitelist =  0cipher/empty
       \end{block}
      
 % ---------------------------------------------------------------------------
-      \begin{block}{Measurement of Metrics}
-        text
+      \begin{block}{RAM and ROM Usage Measurement}
+        \begin{itemize}
+          \item RAM Usage
+            \begin{itemize}
+              \item {\color{red}Bootloader???} paints memory with canary values
+              \item After execution of application it checks
+                    the number of addresses not containing canary values
+              \item This is the amount of stack memory used
+            \end{itemize}
+          \item ROM Usage
+            \begin{itemize}
+              \item UNIX size command is run on generated application which
+                    reports sizes of .bss, .data, and .text
+              \item The {\color{red}sum???} is the amount of ROM that is used
+            \end{itemize}
+        \end{itemize}
+
       \end{block}
 
 % ---------------------------------------------------------------------------
@@ -271,20 +304,21 @@ whitelist =  0cipher/empty
     
 % ---------------------------------------------------------------------------
        \begin{block}{Power Measurement}
-        \begin{minipage}{0.4\linewidth}
-		\includegraphics[scale=1.0]{../figures/xbp-full-top90}
+        \begin{minipage}{0.45\linewidth}
+		\includegraphics[scale=1.2]{../figures/xbp-full-top90}
         \end{minipage}%
 %	\hspace{-5ex}
-	\begin{minipage}{0.5\linewidth}
+	\begin{minipage}{0.48\linewidth}
           \begin{itemize}
             \item Fits between XBH and XBD
             \item Contains I$^2$C pull-ups
             \item Space for power regulator
             \item Supports XBDs with 1.2\,V--5\,V
-            \item Eagle files in git
+            %\item Eagle files in git
           \end{itemize}
           \begin{center}
-            \includegraphics[scale=1.5]{../figures/ina225}
+            \vspace{-2ex}
+            \includegraphics[scale=1.45]{../figures/ina225}
           \end{center} 
 	\end{minipage} 
        \end{block}
@@ -335,11 +369,24 @@ whitelist =  0cipher/empty
        \begin{block}{Throughput of CAESAR Candidates}
         \vspace{-1ex}
          \begin{center}
-           \includegraphics[width=0.9\linewidth]{../figures/aes128}
+           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
 
            {\small Caption}
          \end{center}
        \end{block}
+
+% ---------------------------------------------------------------------------
+       \begin{block}{Future Research}
+        \begin{itemize}
+          \item Adapt XXBX to support Post Quantum Crytpography
+          \item NIST is starting a Lightweight Cryptography Standardization Process for
+                AEAD functions and Hash functions. The draft submission requirements 
+                were published in April 2018. XXBX will support this effort.
+          \item Expanding to other microcontrollers incl. 8-bit.
+          \item Combine with FOBOS to allow side-channel leakage evaluation.
+        \end{itemize}
+       \end{block}
+
 % ---------------------------------------------------------------------------
 % ---------------------------------------------------------------------------
 %      \begin{block}{References}
@@ -354,8 +401,9 @@ whitelist =  0cipher/empty
 % ---------------------------------------------------------------------------
    \begin{columns}%[t]
    \begin{column}{0.977\linewidth}
-      \begin{block}{Supported XBDs}\centering
-          \renewcommand\tabcolsep{4pt}% 
+      \begin{block}{Supported XBDs}
+        \begin{minipage}{0.83\linewidth}
+          \centering\renewcommand\tabcolsep{10pt}% 
           \rowcolors{2}{RoyalBlue!5}{RoyalBlue!20}%
     \begin{tabular}{l|c|ll|rrc|rr|r}
     \textbf{Board}   & \textbf{Manuf.}&\textbf{CPU}&\textbf{ISA}&\textbf{Bus}&\thb{f}&\textbf{HW}&\textbf{ROM}&\textbf{RAM} \\ \hline
@@ -369,6 +417,10 @@ whitelist =  0cipher/empty
     NUCLEO-F103RB    & STM       & ARM Cortex M3  &  ARMv7-M    & 32-bit &  72\,MHz &     &  128kB &  20kB  \\
 %    chipKIT uC32     & Microchip & PIC32MX3xx     &  MIPS32 M4K & 32-bit &  80\,MHz &     &     &     &   \\
     \end{tabular}
+        \end{minipage}
+        \begin{minipage}{0.15\linewidth}
+		\includegraphics[scale=0.9]{../figures/msp-exp430f5529lp}
+        \end{minipage}%
        \end{block}
 \end{column}
 \end{columns}
