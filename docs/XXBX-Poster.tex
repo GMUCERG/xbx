@@ -33,7 +33,7 @@
      
 \graphicspath{{figures/}}
 \title{\LARGE eXtended eXternal Benchmarking eXtension\\ \vspace{0.5ex}(XXBX)}
-\author{Matthew R. Carter \and Raghurama R. Velegala \and John Pham \and Jens-Peter Kaps}%\vspace{-2ex}
+\author{Matthew R. Carter \and Raghurama R. Velegala \and Snehal Patil \and John Pham \and Jens-Peter Kaps}%\vspace{-2ex}
 \institute{\vspace{-1ex}Department of Electrical and Computer Engineering, George Mason University, Fairfax, Virginia 22030, USA }
 \date{March}
 
@@ -200,26 +200,32 @@ embedded platforms and adds metrics for RAM and ROM usage as well as power / ene
 % ---------------------------------------------------------------------------
       
 % ---------------------------------------------------------------------------
+      \vspace{-0.15ex}
       \begin{block}{Main Components of XXBX}
         \begin{center}
           \includegraphics[scale=1.3]{../figures/xxbx_block}
         \end{center} 
         \begin{itemize}
-          \item XXBX Software -- XBS 
+          \item XXBX benchmarking System -- XBS 
           \begin{itemize}
-            \item item 
+            \item Software written in Python and runs on Linux.
+            \item Cross-compiles cryptographic algorithms from SUPERCOP.
+            \item Orchestrates benchmarking flow.
+            \item Collects results and stores them into SQLite database.
           \end{itemize}
           \item XXBX Harness -- XBH 
           \begin{itemize}
-            \item item 
+            \item Passes applications, test data, and instructions to XBD.
+            \item Measures timing and power consumption.
           \end{itemize}
           \item XXBX Power Shim -- XBP
           \begin{itemize}
-            \item item 
+            \item Senses and amplifies power consumption.
           \end{itemize}
           \item XXBX Device Under Test -- XBD
           \begin{itemize}
-            \item item 
+            \item Bootloader accepts commands and waits for application.
+            \item Executes application with cryptographic algorithms.
           \end{itemize}
         \end{itemize}
       \end{block}
@@ -227,27 +233,27 @@ embedded platforms and adds metrics for RAM and ROM usage as well as power / ene
 % ---------------------------------------------------------------------------
       \begin{block}{Benchmarking Flow}
         \begin{center}
-          \includegraphics[scale=1.2]{../figures/xxbx_flow}
+          \includegraphics[scale=1.208]{../figures/xxbx_flow}
         \end{center} 
-          \begin{center}
-            \begin{minipage}{0.9\linewidth}
-            \setbeamercolor{padding}{fg=white, bg=cergbg3}
-            \begin{beamercolorbox}[rounded=true]{padding}%
-               \footnotesize%
-              \begin{lstlisting}
-[hardware]
-platform = msp430fr5994_16mhz
-[algorithm]
-operation = crypto_aead
-primitives =  0cipher
-              aes128n12t8silcv3
-[implementation]
-whitelist =  0cipher/empty
-             aes128n12t8silcv3/ref
-              \end{lstlisting}
-            \end{beamercolorbox}
-            \end{minipage}%
-          \end{center}
+%          \begin{center}
+%            \begin{minipage}{0.9\linewidth}
+%            \setbeamercolor{padding}{fg=white, bg=cergbg3}
+%            \begin{beamercolorbox}[rounded=true]{padding}%
+%               \footnotesize%
+%              \begin{lstlisting}
+%[hardware]
+%platform = msp430fr5994_16mhz
+%[algorithm]
+%operation = crypto_aead
+%primitives =  0cipher
+%              aes128n12t8silcv3
+%[implementation]
+%whitelist =  0cipher/empty
+%             aes128n12t8silcv3/ref
+%              \end{lstlisting}
+%            \end{beamercolorbox}
+%            \end{minipage}%
+%          \end{center}
       \end{block}
      
 % ---------------------------------------------------------------------------
@@ -256,16 +262,16 @@ whitelist =  0cipher/empty
           \item ROM Usage
             \begin{itemize}
               \item UNIX size command is run on generated application which
-                    reports sizes of executable sections: .bss, .data, and .text
-              \item The sum of the .text and .data sections is the amount of ROM that is used
+                    reports sizes of executable sections: \texttt{.bss}, .\texttt{data}, and \texttt{.text}.
+              \item The sum of the \texttt{.text} and \texttt{.data} sections is the amount of ROM that is used.
             \end{itemize}
           \item RAM Usage
             \begin{itemize}
-              \item Application paints memory with canary values
+              \item Application paints memory with canary values.
               \item After execution of cipher operation, application checks
-                    the number of addresses not containing canary values
-              \item This is the amount of stack memory used
-              \item The sum of the stack usage, .data section, and .bss section is the amount of RAM that is used
+                    the number of addresses not containing canary values.
+              \item This is the amount of stack memory used.
+              \item The sum of the stack usage, \texttt{.data} section, and \texttt{.bss} section is the amount of RAM that is used.
             \end{itemize}
           
         \end{itemize}
@@ -318,9 +324,12 @@ whitelist =  0cipher/empty
        \end{block}
 % ---------------------------------------------------------------------------
        \begin{block}{CAESAR}
-        \begin{enumerate}
-          \item Item
-        \end{enumerate}
+        \begin{itemize}
+          \item Competition for Authenticated Encryption: Security, Applicability and Robustness
+          \item Announced in 2013, finalists announced in March 2018.
+          \item Round 3 had 16 algorithms with several variations.
+          \item We benchmark them all on the microcontrollers supported by XXBX.
+        \end{itemize}
        \end{block}
 
 % ---------------------------------------------------------------------------
@@ -360,12 +369,24 @@ whitelist =  0cipher/empty
         \end{center}
        \end{block}
 % ---------------------------------------------------------------------------
-       \begin{block}{Throughput of CAESAR Candidates}
+       \begin{block}{Results of CAESAR Candidates}
         \vspace{-1ex}
          \begin{center}
            \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
 
-           {\small Caption}
+           \vspace{-1ex}{\small Throughput}\vspace{1ex}
+
+           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+
+           \vspace{-1ex}{\small RAM Usage}\vspace{1ex}
+
+           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+
+           \vspace{-1ex}{\small ROM Usage}\vspace{1ex}
+
+           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+
+           \vspace{-1ex}{\small Energy Consumption}
          \end{center}
        \end{block}
 
