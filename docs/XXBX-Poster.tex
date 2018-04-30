@@ -56,44 +56,33 @@
 
 % ---------------------------------------------------------------------------
       \begin{block}{Abstract}
-This text has abstract, motivation and previous work mixed!
 Many cryptographic standards are determined through competitions in which 
 candidate algorithms are evaluated for their security and performance in software as
-well as in hardware. The move to the Internet of Things (IoT) leads to formerly 
-``dumb'' devices being connected to the Internet and hence requiring some level
-of security, provided by cryptographic algorithms. It became therefore necessary
-to benchmark cryptographic algorithms on microcontrollers. While algorithms on 
-desktop computers and other devices capable of running an POSIX operation system and 
-a compiler can be benchmarked using the 
-System for Unified Performance Evaluation Related to Cryptographic Operations and Primitives
-(SUPERCOP), no such benchmarking was available for less powerful microcontrollers. 
-Furthermore,  these microcontrollers can impose severe restrictions on available 
-random-access and read-only memory (RAM, ROM), which makes RAM and ROM usage metrics as
-important as execution time.
-Therefore, an eXternal Benchmarking eXtension (XBX) to SUPERCOP was developed, which 
-supports several microcontrollers and captures execution time as well as RAM and ROM usage. 
-It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WGPK12}.  
-
-%In support of the Competition for Authenticated Encryption: 
-%Security, Applicability, and Robustness (CAESAR) we eXtended XBX, hence XXBX.
-%First of all, we adjusted it to handle algorithms for Authenticated Encryption with Associated Data (AEAD).
-%The most significant change is the ability to measure the power consumption 
-%of the microcontroller Device under test (XBD). We developed a Power shim (XBP) that 
-%sits between the test Harness (XBH) and XBD and amplifies the sensed current so that the
-%Analog to Digital Converter (ADC) on the XBH can measure the current drawn by the XBD.
-%Due to this additional task we had to replace the original XBH with a more capable platform which
-%is ARM based and runs RTOS. This required a complete re-write of the software. 
-%The cost of the XBH did not change. Also the software that runs the 
-%benchmarking on a desktop System (XBS) was rewritten to eliminate a mix of shell and Perl scripts
-%by Python and a flat file result collection by a SQLite database~\cite{Pha15,PK15,Kap16}.
+well as in hardware. 
+The latest such competition is the Lightweight Cryptography Standardization
+Process by NIST. 
+%The submission requirements published in April 2018 call for
+%Authenticated Encryption with Associated Data (AEAD) and hash function algorithms.
+%This competition
+It targets in particular resource-constrained devices such as 
+microcontrollers.
+%
+The eXtended eXternal Benchmarking eXtension (XXBX) is a tool for benchmarking the performance, 
+memory usage, and power / energy consumption of cryptographic software on microcontrollers. 
+It is an extension to the System for Unified Performance Evaluation Related to Cryptographic 
+Operations and Primitives (SUPERCOP) which benchmarks a large variety of cryptographic primitives 
+on general purpose computers. XXBX extends it in the sense that it allows for benchmarking on 
+embedded platforms and adds metrics for RAM and ROM usage as well as power / energy consumption. 
       \end{block}
 
 % ---------------------------------------------------------------------------
       \begin{block}{Motivation}
         \begin{itemize}
-          \vspace{-1ex}\small
-          \item IoT promises a dramatic increase in devices, many will be microcontrollers or SOCs.
-          \item 32-bit microcontrollers are projected to take lead over 8/16-bit by 2018.
+          \item The move to the Internet of Things (IoT) leads to formerly 
+                ``dumb'' devices being connected to the Internet.
+          \item They require some level of security $\Rightarrow$ cryptographic algorithms.
+          \item IoT promises a dramatic increase in devices, many will be microcontrollers or System on Chips (SOCs).
+          \item 32-bit microcontrollers are projected to take lead over 8/16-bit.% by 2018.
           \item 51\% of all 32-bit microcontrollers were ARM based in 2012.
         \end{itemize}
         \begin{center}
@@ -130,9 +119,9 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
         \begin{beamercolorbox}[rounded=true]{padding}
           \textbf{Missing Features}\small
           \begin{itemize}
-            \item Does not measure ROM usage, RAM usage, power consumption
-            \item Does not support cross-compilation
-            \item Does not support microcontrollers
+            \item Does not measure ROM usage, RAM usage, power consumption.
+            \item Does not support cross-compilation.
+            \item Does not support microcontrollers.
           \end{itemize}
         \end{beamercolorbox}
         \end{minipage}
@@ -141,11 +130,11 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
           \item XBX
             \begin{itemize}
               \item eXternal Benchmarking eXtension (XBX) to SUPERCOP
-              \item Automated testing on real microcontrollers
-              \item Compatibility with SUPERCOP algorithm collection (``algopacks'') and output format
-              \item Low cost hardware and software
+              \item Automated testing on real microcontrollers.
+              \item Compatibility with SUPERCOP algorithm collection (``algopacks'') and output format.
+              \item Low cost hardware and software.
               \item Our contribution to original XBX was to port it to the MSP430
-                  platform and provide results for SHA-3 finalists.
+                  platform and provide results for SHA-3 finalists..
               \item Measures ROM and RAM usage. %Does not measure power consumption.
             \end{itemize}
         \end{itemize}
@@ -155,8 +144,8 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
         \begin{beamercolorbox}[rounded=true]{padding}
           \textbf{Missing Features}\small
           \begin{itemize}
-            \item Does not measure power consumption
-            \item Harness device (ATmega32) limits future expansion
+            \item Does not measure power consumption.
+            \item Harness device (ATmega32) limits future expansion.
           \end{itemize}
         \end{beamercolorbox}
         \end{minipage}
@@ -188,11 +177,12 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
         {e\color{red}X}tended e{\color{red}X}ternal {\color{red}B}enchmarking 
         e{\color{red}X}tention extends the XBX by:% 
         \begin{itemize}
-          \item Added power measurement
-          \item Added support for Authenticated Encryption with Associated Data (AEAD) functions
-          \item Replaced harness with more powerful device running FreeRTOS
-          \item Rewrote software in Python 3 (was bash and perl)
-          \item Result storage now in SQLite database
+          \item Support for power and energy measurement.
+          \item Support for Authenticated Encryption with Associated Data (AEAD) and hash functions
+                to support NIST Lightweight Cryptography competition.
+          \item Usage of a new harness with a powerful microcontroller running FreeRTOS.
+          \item Rewritten software in Python 3 (was bash and perl).
+          \item Storage of results in SQLite database.
         \end{itemize}
         \begin{center}
           \includegraphics[scale=1.5]{../figures/xxbx-tilted}
@@ -236,7 +226,9 @@ It was first used during the Secure Hash Function-3 (SHA-3) competition~\cite{WG
      
 % ---------------------------------------------------------------------------
       \begin{block}{Benchmarking Flow}
-        Text
+        \begin{center}
+          \includegraphics[scale=1.2]{../figures/xxbx_flow}
+        \end{center} 
           \begin{center}
             \begin{minipage}{0.9\linewidth}
             \setbeamercolor{padding}{fg=white, bg=cergbg3}
