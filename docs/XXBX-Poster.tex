@@ -253,19 +253,21 @@ whitelist =  0cipher/empty
 % ---------------------------------------------------------------------------
       \begin{block}{RAM and ROM Usage Measurement}
         \begin{itemize}
-          \item RAM Usage
-            \begin{itemize}
-              \item {\color{red}Bootloader???} paints memory with canary values
-              \item After execution of application it checks
-                    the number of addresses not containing canary values
-              \item This is the amount of stack memory used
-            \end{itemize}
           \item ROM Usage
             \begin{itemize}
               \item UNIX size command is run on generated application which
-                    reports sizes of .bss, .data, and .text
-              \item The {\color{red}sum???} is the amount of ROM that is used
+                    reports sizes of executable sections: .bss, .data, and .text
+              \item The sum of the .text and .data sections is the amount of ROM that is used
             \end{itemize}
+          \item RAM Usage
+            \begin{itemize}
+              \item Application paints memory with canary values
+              \item After execution of cipher operation, application checks
+                    the number of addresses not containing canary values
+              \item This is the amount of stack memory used
+              \item The sum of the stack usage, .data section, and .bss section is the amount of RAM that is used
+            \end{itemize}
+          
         \end{itemize}
 
       \end{block}
