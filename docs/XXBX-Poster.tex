@@ -328,65 +328,68 @@ embedded platforms and adds metrics for RAM and ROM usage as well as power / ene
           \item Competition for Authenticated Encryption: Security, Applicability and Robustness
           \item Announced in 2013, finalists announced in March 2018.
           \item Round 3 had 16 algorithms with several variations.
-          \item We benchmark them all on the microcontrollers supported by XXBX.
+          \item We tried to benchmark all 7 finalists and their variations on the microcontrollers supported by XXBX.
+          \item Unfortunately only few could be compiled for microcontrollers.
         \end{itemize}
        \end{block}
 
 % ---------------------------------------------------------------------------
-       \begin{block}{CAESAR Results}
-        \begin{center}
-        { \small%
-          \renewcommand\tabcolsep{4pt}% 
-          \rowcolors{3}{RoyalBlue!5}{RoyalBlue!20}%
-          \begin{tabular}{|r||c|c|c|c||c|c}\hline
-            \rowcolor{RoyalBlue!20}%
-              & \multicolumn{4}{>{\columncolor{RoyalBlue!20}}c||}{\textbf{SASEBO}} 
-              & \multicolumn{2}{>{\columncolor{RoyalBlue!20}}c}{\textbf{SAKURA}}      \\ 
-            \rowcolor{RoyalBlue!20}%
-            \rb{\textbf{Board}}   &          & \textbf{G} & \textbf{GII}  & \textbf{B}   & \textbf{X}   & \textbf{G}    \\ \hline
-            \textbf{Control}      & Virtex-2 & Virtex-2   &               &              &              &               \\
-            \rowcolor{RoyalBlue!5}%
-            \textbf{FPGA}         & Pro      & Pro        &\rb{Spartan-3A}&\rb{Stratix-2}&\rb{Spartan-6}&\rb{Spartan-6} \\
-            \rowcolor{RoyalBlue!20}%
-            \textbf{DUT}          & Virtex-2 & Virtex-2   &               &              &              &               \\
-            \textbf{FPGA}         & Pro      & Pro        &\rb{Virtex-5}  &\rb{Stratix-2}&\rb{Kintex-7} &\rb{Spartan-6} \\ 
-            \textbf{Techn.}       
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{130\,nm}  
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{130\,nm}  
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{65\,nm}        
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r||}{90\,nm}       
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{28\,nm}    
-              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r}{45\,nm} \\       
-                                  &          & RS232,     &               & RS232,       &              &               \\
-            \rowcolor{RoyalBlue!20}%
-            \rb{\textbf{PC Data}} &RS232     &FT245RL     &\rb{FT2232D}   & FT245RL      & USB          & USB           \\ 
-            \rb{\textbf{Comms.}}  &          &(USB)       &\rb{(USB)}     & (USB)        &              &               \\ 
-                                  &Discon-   &Discon-     &Discon-        &              &              &               \\ 
-            \rowcolor{RoyalBlue!5}%
-            \rb{\textbf{Status}}  &tinued    &tinued      &tinued         &              &              &               \\ \hline
-          \end{tabular}
-        }
-        \end{center}
-       \end{block}
+%       \begin{block}{CAESAR Results}
+%        \begin{center}
+%        { \small%
+%          \renewcommand\tabcolsep{4pt}% 
+%          \rowcolors{3}{RoyalBlue!5}{RoyalBlue!20}%
+%          \begin{tabular}{|r||c|c|c|c||c|c}\hline
+%            \rowcolor{RoyalBlue!20}%
+%              & \multicolumn{4}{>{\columncolor{RoyalBlue!20}}c||}{\textbf{SASEBO}} 
+%              & \multicolumn{2}{>{\columncolor{RoyalBlue!20}}c}{\textbf{SAKURA}}      \\ 
+%            \rowcolor{RoyalBlue!20}%
+%            \rb{\textbf{Board}}   &          & \textbf{G} & \textbf{GII}  & \textbf{B}   & \textbf{X}   & \textbf{G}    \\ \hline
+%            \textbf{Control}      & Virtex-2 & Virtex-2   &               &              &              &               \\
+%            \rowcolor{RoyalBlue!5}%
+%            \textbf{FPGA}         & Pro      & Pro        &\rb{Spartan-3A}&\rb{Stratix-2}&\rb{Spartan-6}&\rb{Spartan-6} \\
+%            \rowcolor{RoyalBlue!20}%
+%            \textbf{DUT}          & Virtex-2 & Virtex-2   &               &              &              &               \\
+%            \textbf{FPGA}         & Pro      & Pro        &\rb{Virtex-5}  &\rb{Stratix-2}&\rb{Kintex-7} &\rb{Spartan-6} \\ 
+%            \textbf{Techn.}       
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{130\,nm}  
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{130\,nm}  
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{65\,nm}        
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r||}{90\,nm}       
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r|}{28\,nm}    
+%              & \multicolumn{1}{>{\columncolor{RoyalBlue!5}}r}{45\,nm} \\       
+%                                  &          & RS232,     &               & RS232,       &              &               \\
+%            \rowcolor{RoyalBlue!20}%
+%            \rb{\textbf{PC Data}} &RS232     &FT245RL     &\rb{FT2232D}   & FT245RL      & USB          & USB           \\ 
+%            \rb{\textbf{Comms.}}  &          &(USB)       &\rb{(USB)}     & (USB)        &              &               \\ 
+%                                  &Discon-   &Discon-     &Discon-        &              &              &               \\ 
+%            \rowcolor{RoyalBlue!5}%
+%            \rb{\textbf{Status}}  &tinued    &tinued      &tinued         &              &              &               \\ \hline
+%          \end{tabular}
+%        }
+%        \end{center}
+%       \end{block}
 % ---------------------------------------------------------------------------
        \begin{block}{Results of CAESAR Candidates}
         \vspace{-1ex}
          \begin{center}
-           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+           \includegraphics[width=1.0\linewidth]{../figures/throughput}
 
-           \vspace{-1ex}{\small Throughput}\vspace{1ex}
+%           \vspace{-1ex}{\small Throughput}\vspace{1ex}
 
-           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+           \includegraphics[width=1.0\linewidth]{../figures/romusage}
 
-           \vspace{-1ex}{\small RAM Usage}\vspace{1ex}
+%           \vspace{-1ex}{\small RAM Usage}\vspace{1ex}
 
-           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+           \includegraphics[width=1.0\linewidth]{../figures/ramusage}
 
-           \vspace{-1ex}{\small ROM Usage}\vspace{1ex}
+%           \vspace{-1ex}{\small ROM Usage}\vspace{1ex}
 
-           \includegraphics[width=0.9\linewidth]{../figures/cycles_per_byte}
+           \includegraphics[width=1.0\linewidth]{../figures/averagepower}
 
-           \vspace{-1ex}{\small Energy Consumption}
+           \includegraphics[width=1.0\linewidth]{../figures/energy}
+
+%           \vspace{-1ex}{\small Energy Consumption}
          \end{center}
        \end{block}
 
