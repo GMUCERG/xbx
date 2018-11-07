@@ -773,17 +773,17 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="246.38" y1="91.44" x2="246.38" y2="137.16" width="0.2032" layer="97" style="longdash"/>
 <text x="149.86" y="30.48" size="3.81" layer="121">XXBX: XBP - ST morpho Adapter</text>
 <text x="149.86" y="25.4" size="2.54" layer="121">cryptography.gmu.edu</text>
-<text x="236.22" y="7.62" size="2.54" layer="121">rev 1.0</text>
+<text x="236.22" y="7.62" size="2.54" layer="121">rev 1.1</text>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="0" y="0" smashed="yes"/>
 <instance part="FRAME1" gate="G$2" x="147.32" y="0"/>
 <instance part="JP2" gate="A" x="20.32" y="114.3"/>
 <instance part="SUPPLY1" gate="GND" x="10.16" y="104.14"/>
-<instance part="SUPPLY3" gate="GND" x="35.56" y="124.46"/>
+<instance part="SUPPLY3" gate="GND" x="33.02" y="124.46"/>
 <instance part="JP1" gate="A" x="20.32" y="162.56"/>
 <instance part="JP4" gate="A" x="96.52" y="162.56"/>
-<instance part="JP3" gate="G$1" x="40.64" y="144.78"/>
+<instance part="JP3" gate="G$1" x="48.26" y="144.78"/>
 <instance part="SUPPLY4" gate="GND" x="66.04" y="160.02"/>
 <instance part="SUPPLY2" gate="GND" x="12.7" y="142.24"/>
 <instance part="SUPPLY5" gate="GND" x="109.22" y="144.78"/>
@@ -801,7 +801,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <segment>
 <pinref part="JP2" gate="A" pin="2"/>
 <pinref part="SUPPLY3" gate="GND" pin="GND"/>
-<wire x1="30.48" y1="127" x2="35.56" y2="127" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="127" x2="33.02" y2="127" width="0.1524" layer="91"/>
 <wire x1="25.4" y1="119.38" x2="30.48" y2="119.38" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="119.38" x2="30.48" y2="127" width="0.1524" layer="91"/>
 </segment>
@@ -836,7 +836,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <segment>
 <pinref part="JP2" gate="A" pin="6"/>
 <wire x1="25.4" y1="114.3" x2="81.28" y2="114.3" width="0.1524" layer="91"/>
-<label x="25.4" y="114.3" size="1.778" layer="95"/>
+<label x="63.5" y="114.3" size="1.778" layer="95"/>
 <pinref part="JP4" gate="A" pin="3"/>
 <wire x1="93.98" y1="170.18" x2="81.28" y2="170.18" width="0.1524" layer="91"/>
 <wire x1="81.28" y1="170.18" x2="81.28" y2="114.3" width="0.1524" layer="91"/>
@@ -857,11 +857,11 @@ In this library the device names are the same as the pin names of the symbols, t
 <net name="RSTD" class="0">
 <segment>
 <pinref part="JP2" gate="A" pin="8"/>
-<wire x1="45.72" y1="157.48" x2="45.72" y2="111.76" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="111.76" x2="25.4" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="157.48" x2="55.88" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="111.76" x2="25.4" y2="111.76" width="0.1524" layer="91"/>
 <label x="25.4" y="111.76" size="1.778" layer="95"/>
 <pinref part="JP1" gate="A" pin="14"/>
-<wire x1="25.4" y1="157.48" x2="45.72" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="157.48" x2="55.88" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCCD" class="0">
@@ -889,27 +889,19 @@ In this library the device names are the same as the pin names of the symbols, t
 <net name="N$6" class="0">
 <segment>
 <pinref part="JP3" gate="G$1" pin="1"/>
-<wire x1="38.1" y1="144.78" x2="33.02" y2="144.78" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="144.78" x2="33.02" y2="154.94" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="154.94" x2="25.4" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="144.78" x2="38.1" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="144.78" x2="38.1" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="154.94" x2="25.4" y2="154.94" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="A" pin="16"/>
 <pinref part="JP2" gate="A" pin="4"/>
 <wire x1="25.4" y1="116.84" x2="38.1" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="116.84" x2="38.1" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="116.84" x2="38.1" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="139.7" x2="33.02" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="139.7" x2="33.02" y2="144.78" width="0.1524" layer="91"/>
-<junction x="33.02" y="144.78"/>
+<wire x1="38.1" y1="116.84" x2="38.1" y2="144.78" width="0.1524" layer="91"/>
+<junction x="38.1" y="144.78"/>
 </segment>
 </net>
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="104,1,142.24,78.74,U1,VS,VCCXBP,,,"/>
-<approved hash="104,1,172.72,78.74,U1,OUT,PWR0,,,"/>
-<approved hash="202,1,30.48,55.88,IC1,VI,,,,"/>
-</errors>
 </schematic>
 </drawing>
 </eagle>
