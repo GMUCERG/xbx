@@ -1,10 +1,24 @@
 \documentclass[twoside,11pt]{cergdoc}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{listings}
 
+\newcommand\thead[1]{\multicolumn{1}{c}{\textbf{#1}}}
+\newcommand\theadr[1]{\multicolumn{1}{c|}{\textbf{#1}}}
 \newcommand{\ITwoC}{I\textsuperscript{2}C }
 
 \begin{document}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=C,
+  otherkeywords={bis.b,bis.w,bic.b,bic.w,bit.b,bit.w,mov.b,mov.w,dec.b,dec.w,jnz,jmp},
+  commentstyle=\color{cerglightblue},
+  keywordstyle=\color{cergpink},
+  numberstyle=\color{cergpred},
+  stringstyle=\color{cergblue},
+  identifierstyle=\color{cergpurple}
+}
 
 \title{eXtended eXternal Benchmarking eXtension -- XXBX}
 \subtitle{XXBX Getting Started v1.0}
@@ -178,6 +192,92 @@ communication and execution signaling, as well as stack measurement.
 % -----------------------------------------------------------------------------
   \section{Requirements}
   \section{Installation}
+
+    \subsection{XBH}
+The XBS connects to the XBH via Ethernet. The TCP/IP parameters can be set
+in the file \verb|xbx/xbh/xbh_config.h|. All IP addresses are to be specified
+in hexadecimal. An example is shown below.
+
+\begin{cergbox}{XBH TCP/IP Configuration}
+\begin{lstlisting}
+#define XBH_HOSTNAME    "xbh"
+#define TCP_XBH_PORT    22595
+#define XBH_IP4_STATIC  1          // no dhcp, use static address
+#define XBH_IP4_ADDR    0xC0A80A10 // 192.168.10.16   
+                     // C0-192, A8-168, 0A-10, 10-16
+#define XBH_IP4_NETMASK 0xFFFFFF00 // 255.255.255.0
+\end{lstlisting}
+\end{cergbox}
+
+The XBS will try to connect to the XBH by name "xbh". Hence, the name "xbh" has to 
+be mapped to the correct IP address. You can edit your \verb|\etc\hosts| file
+and add the following line.
+
+\begin{center}
+\verb|192.168.10.16    xbh|
+\end{center}
+
+After you have made settings appropriate to your network, you have to compile
+the XBH code. This requires that a GCC ARM compiler is installed on your system.
+One option is to install \emph{Code Composer Studio (CCS)} from \emph{Texas Instruments}
+which can be found at \url{http://www.ti.com/tool/CCSTUDIO}. After installation
+start CCS as \textbf{root} to install all updates and make sure that 
+\emph{ARM GCC} is selected in the \emph{App Center} of CCS. Then add the location
+of the ARM GCC to your \emph{PATH} environment variable of your shell. The text 
+\texttt{VERSION} in the example below has to be replaced with the version installed
+on your system. 
+The ARM GCC executable is typically called \texttt{arm-none-eabi-gcc}.
+
+\begin{center}
+\lstinline|export PATH=/opt/ti/ccsv8/tools/compiler/gcc-arm-none-eabi-VERSION/bin/:$PATH| 
+\end{center}
+
+Now enter the \verb|xbx/xbh| directory and build the XBH executable by typing 
+
+\begin{lstlisting}
+make
+\end{lstlisting}
+
+In oder to program the XBH, first install \emph{openocd} from your Linux distribution.
+Then configure \emph{udev} for the XBH by creating a new file called
+\texttt{99-tiva-launchpad.rules} in \verb|/etc/udev/rules.d/|.
+
+\begin{cergbox}{Contents of \texttt{/etc/udev/rules.d/99-tiva-launchpad.rules}}
+\small\begin{lstlisting}
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1cbe", ATTRS{idProduct}=="00fd", 
+GROUP="dialout", MODE="0666"
+\end{lstlisting}
+This text should be in one line.
+\end{cergbox}
+
+In order to activate this rule you can either restart your computer or issue the
+following commands on the command line.
+
+\begin{lstlisting}
+systemctl restart udev 
+udevadm trigger
+udevadm settle
+udevadm control -R
+\end{lstlisting}
+
+Now the system is ready to program the XBH. Connect the XBH with a USB cable plugged into
+the USB port labled \emph{DEBUG} on the XBH. Start the debugger \verb|arm-tiva_c-eabi-gdb|
+and issue the following commands in the debugger shell.
+
+\begin{lstlisting}
+source .gdbinit
+load
+c
+\end{lstlisting}
+
+Start a terminal program (for example \emph{minicom} 
+and point it to your XBH. The XBH typically uses \verb|/dev/ttyACM0|.
+You can verify this with the output of the \texttt{dmesg} command. Connect the XBH to the
+Ethernet and press the \emph{Reset} button on the XBH. It should print its main 
+settings into the terminal. Now your XBH is ready.
+
+
+
   \section{Example Run}
 Prior to running any scripts, the XBD is initialized by compiling the
 platform-specific bootloader and flashing it normally (i.e. using a programming
