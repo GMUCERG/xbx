@@ -192,6 +192,13 @@ communication and execution signaling, as well as stack measurement.
 % -----------------------------------------------------------------------------
   \section{Requirements}
   \section{Installation}
+    \subsection{Software Installation}
+
+
+
+     \verb|git checkout master|
+     in \verb|xbs_xbd| and \verb|xbh| directories to update the corresponding
+     subrepositories.
 
     \subsection{XBH}
 The XBS connects to the XBH via Ethernet. The TCP/IP parameters can be set
@@ -276,7 +283,26 @@ You can verify this with the output of the \texttt{dmesg} command. Connect the X
 Ethernet and press the \emph{Reset} button on the XBH. It should print its main 
 settings into the terminal. Now your XBH is ready.
 
+\subsection{XBD}
+Example ek-tm4c123gxl
 
+same C-compiler as used for XBH
+go to 
+\verb|xbx/xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles|
+type make
+
+make sure only the XBD is connected to your computer and the xbh is not.
+
+start
+arm-none-eabi-gdb
+
+\begin{lstlisting}
+source .gdbinit
+load
+c
+\end{lstlisting}
+
+done
 
   \section{Example Run}
 Prior to running any scripts, the XBD is initialized by compiling the
