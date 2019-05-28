@@ -78,7 +78,8 @@ implementation of such instruction-heavy algorithms a very complicated effort. O
 cryptographic library exists for ARM Cortex-M4 architectures known as pqm4~\cite{PQM4}. 
 However, even this library overlooks some of the memory constraints of many devices. 
 There exist tools to help the development, testing, and benchmarking on these specific 
-environments—for example, eXtended eXternal Benchmarking eXtension (XXBX)~\cite{PK15,Kap16} which extends 
+environments—for example, eXtended eXternal Benchmarking eXtension (XXBX)~\cite{PK15,Kap16}
+(shown in Fig.\,\ref{fig:xxbx_setup}) which extends 
 XBX~\cite{xbx} and SUPERCOP~\cite{SUP06}.  Since quantum computing is developing at an increased rate, 
 it is vital for tools, such as XXBX, to keep up-to-date with the 
 new emerging cryptographic standards.
@@ -90,13 +91,18 @@ new emerging cryptographic standards.
     \label{fig:xxbx_setup}
 \end{figure}
 
-\section{Background (XXBX Design)}
+\section{XXBX Design}
 
 XXBX can be broken into four parts: eXternal Benchmarking Software (XBS), eXternal 
 Benchmarking Harness (XBH), eXternal Benchmarking Power (XBP), and 
-eXternal Benchmarking Device (XBD). The XBS is the software used to interact with the XBH. 
-The XBH acts as the control center and interface between the XBH and XBD. The XBP regulates 
-the power and current going to the XBD. The XBD is the target device being benchmarked~\cite{xxbx}.
+eXternal Benchmarking Device (XBD) (see Fig.\,\ref{fig:xxbx_block}). 
+The XBS is the software running on a PC that handles
+the cross-compilation of cryptographic algorithms and orchestrates the benchmarking 
+process. It interfaces with the XBH via Ethernet.  
+The XBH acts as the control center and interface between the XBS and XBD. Additionally, it 
+measures the execution time of each algorithm on the XBD and the power consumed with the 
+help of the XBP. The XBP contains a current shunt and an amplifier to enable the XBH 
+to obtain accurate current consumption readings. The XBD is the target device being benchmarked~\cite{xxbx}.
 
 \begin{figure}[ht]
     \centering
@@ -105,20 +111,37 @@ the power and current going to the XBD. The XBD is the target device being bench
     \label{fig:xxbx_block}
 \end{figure}
 
-\subsection{Flow}
-The XBS will compile the benchmarking test cases and upload them via TCP to the XBH. 
-The XBH will forward the test cases to the XBD via I2C and send a ``start execution'' signal. 
+\subsection{Benchmarking Flow}
+The XBS cross compiles the cryptographic algorithms that are to be benchmarked 
+using a host of different compiler and linker options to ``test applications'' for the 
+microcontroller on the selected XBD. 
+Then the benchmarking is performed using the benchmarking flow depicted in Figure~\ref{fig:xxbx_flow}. 
+The operations of \emph{Ecrypt}, \emph{Decrypt}, and \emph{Forged Decryption} are based on 
+requirements for benchmarking Authenticated Encryption with Associated Data (AEAD) algorithms.
+It starts by initiating a 
+timing calibration of the XBH to make sure it can accurately convert the elapsed execution time
+of an algorithm on the XBD to the number of clock cycles spent on the XBD.
+It then runs several benchmarking runs on each application. 
+For that, it uploads the application via TCP to the XBH.
+The XBH forwards the executable to the XBD via I2C and commands the XBD to start 
+running the application. It then sends cipher parameters such as key and message
+to the XBD followed by a command to start the execution of the cryptographic
+algorithm. Once received the XBD sends an ``execution start'' signal back to the
+XBH upon which the XBH will start measuring the elapsed time.
 The XBD will execute the uploaded benchmarking test cases and return the results. 
-Along with the results, the XBD will send back the clock cycles taken to execute the 
-benchmark as well as the total stack usage.
-
+Along with the results, the XBD will send back
+%FIXME: is this new? 
+%the clock cycles taken to execute the benchmark as well as 
+the total stack usage.
 During the execution, the XBH measures the power usage at regular intervals by taking 
-samples from the XBP. After the execution is complete, the XBH will gather the power 
+samples from the XBP. The XBD will signal the end of the execution through an 
+``execution end'' signal to the XBH. The XBH will gather the power 
 usage and results sent back from the XBD, package them, and send them back to the XBS 
-for analysis [10].
-
+for analysis.
+If there are more parameter sets to be tested for this application, the test will 
+continue. Else, the next application will be tested.
 The XBS will take these results and check for success. If successful, the results are 
-uploaded to a database for further analysis. Figure~\ref{fig:xxbx_flow} depicts the flow of execution.
+uploaded to a database for further analysis. 
 
 \begin{figure}[ht]
     \centering
@@ -133,12 +156,12 @@ The XBD needs to be loaded with a small bootloader that is able to receive comma
 and respond to the XBH. The main commands used for execution are the following:
 
 \begin{enumerate}
-  \item\emph{Program Flash Request}
+  \item\emph{Program Flash Request: }
      Loads the benchmarking test case application to the ROM.
-  \item\emph{Timing Calibration Request}
+  \item\emph{Timing Calibration Request: }
      Calibrates the timing differences between the XBH and the XBD to allow for proper 
      timing measurements.
-  \item\emph{Start Application Request}
+  \item\emph{Start Application Request: }
      Switches the execution from the bootloader to the benchmarking test case application.
 \end{enumerate}
 
@@ -160,7 +183,7 @@ functions: compilation, execution, and data recording.
 
 A configuration file sets the cryptographic operation, the algorithm, the specific 
 implementation to test, and the parameters needed to run the test. During compilation, 
-the XBS will grab the specified implementation and the XBD wrapper code needed to execute 
+the XBS grabs the specified implementation and the XBD wrapper code needed to execute 
 the operation. Header files following the libcrypto format are generated and the code 
 is compiled along with any dependencies that may be needed.
 Upon a successful compilation, the database is initialized with the components needed 
@@ -191,22 +214,22 @@ device being benchmarked for correct results. Timing calibration is needed betwe
 and XBD to correctly estimate the number of clock cycles required to execute the cryptographic 
 algorithm. When the start execution signal is received from the XBD, the XBH will start timing 
 the execution and gather power usage statistics. This stops when the XBD sends the 
-execution ended signal. At which point, the XBH will translate the time taken to clock cycles 
+execution ended signal. At which point, the XBH translates the time taken to clock cycles 
 on the XBD. It then asks for the results and stack usage from the XBD.
 This all gets packaged and returned to the XBS for analysis.
 
-\section{KEMs and Signature Schemes}
+\section{Adding Support for KEMs and Signature Schemes to XXBX}
 
 For XXBX to be useful for benchmarking quantum-resistant cryptography, the functionality 
 must be extended to include key encapsulation methods and signature schemes. This 
 functionality is required in two separate parts of XXBX: XBS and XBD.
 
-\subsection{XBS Extension}
+\subsection{Changes to the XBS}
 XBS needs to understand the structure and tests needed to support the new functionality. 
-As noted before, XBS will initialize the database with the components needed to properly 
-execute the tests. During the execution stage, it will grab these components to forward 
-to the XBH. A translation is needed here to package the data into something that XBD will 
-understand. Also, upon return, the data will need to be translated back into something XBS 
+As noted before, XBS initializes the database with the components needed to properly 
+execute the tests. During the execution stage, it grabs these components to forward 
+to the XBH. A translation is needed here to package the data into something that XBD  
+understands. Also, upon return, the data needs to be translated back into something XBS 
 can analyze. This translation should be dependent on the operation but general enough to 
 support many different implementations.
 
@@ -218,14 +241,17 @@ returns successfully or the trial is cut short, deemed a failure, and continues 
 next trial.
 
 The parameters to package differ based on the mode of operation. And because there are 
-different modes, and extra variable is needed to specify which mode the XBD will run.
+different modes, an extra variable is needed to specify which mode the XBD should run.
 
 The structure of execution results expected back in return follows a similar design. 
 Because both KEMs and signature schemes depend on the result of the previous mode, these 
-structures need to be kept track of during the life of the trial. Fig. 2 depicts both the 
-structure of the parameters and the structure of the returned results.
+structures need to be kept track of during the life of the trial. 
 
-For KEM key generation mode, no parameters are required—just the mode of operation while 
+%FIXME: I did not include this picture as I did not understand it
+%Fig. 2 depicts both the 
+%structure of the parameters and the structure of the returned results.
+
+For KEM key generation mode, no parameters are required -- just the mode of operation while 
 the results include both the public and secret key. For KEM encapsulation mode, the 
 public key is written to the ROM at the next available block after the application binary. 
 A pointer to this location is provided as a parameter while the results include the session 
@@ -239,6 +265,8 @@ pointer to its location along with the message are passed while the signature is
 Lastly, for opening/verifying, the public key is written to ROM and a pointer to its location 
 and signature are provided while the results include the verified message.
 
+%FIXME: Need to talk about the graph below in the text.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{../figures/xxbx_pk.pdf}
@@ -246,7 +274,7 @@ and signature are provided while the results include the verified message.
     \label{fig:xxbx_pk}
 \end{figure}
 
-\subsection{XBD Extension}
+\subsection{Changes to the XBD}
 XBD needs to translate the Start Application Request instruction to the intended operation. 
 In order to do so, the data or parameters received by the XBS must match a format expected 
 by the XBD. In turn, the results of the test must be packaged in a format the XBS is expecting.
@@ -262,7 +290,7 @@ This is particularly useful for ensuring incorrect decapsulation and detecting s
 forgeries on the XBS side.
 
 Unlike the XBS, each execution is independent of the previous.
-
+%FIXME: what do you mean by this sentence. Expand to make it more clear
 
 \subsection{XBD Standalone}
 An additional module was added to the XXBX structure. This XBD standalone mode creates 
@@ -281,29 +309,42 @@ test the logic of the implementation prior to running performance testing with X
 The automated build makes this process simple and extensible.
 
 
-\section{IV. Quantum-Resistant Public Key Cryptography}
+\section{Benchmarking Quantum-Resistant Public Key Cryptographic Algorithms}
 
 NIST released an initiative to design new quantum-resistant public key cryptographic 
 standards. The algorithms analyzed are many of the candidates submitted to NIST for 
-analysis [10].
+analysis. %FIXME: need to add citation to NIST PQC
 
-SUPERCOP has a repository of KEM and Signature implementation that fix the XBX structure. 
+SUPERCOP has a repository of KEM and Signature implementation that fit the XXBX structure. 
 This repository has many of the candidates for the new post-quantum standard. 
 However, some of these algorithms are not capable of being built in embedded 
-environments—particularly because of operating system calls.
+environments—particularly because of operating system calls or reliance on 
+libraries such as openssl.
+%FIXME: please check the last statement (made by me)
 
 Some additional implementations were pulled from pqm4 to replace those in SUPERCOP. 
 Pqm4 has included some libraries and implementations of common dependencies required by 
 a lot of these algorithms that work with the Cortex-M4 architecture~\cite{PQM4}. Pqm4 focused on 
 Level III algorithms, so some work was required to fit Level I and Level V versions. 
 
-\section{Target Device}
+%FIXME: This section requires a little bit of work clarifying what we actually tested
+% and including what we want to test by August. First and foremost, can you benchmark
+% the latest, round 2, pqm4 algorithms?
+
+\subsection{Target Device}
 
 The ek-tm4c123gxl device was chosen to benchmark using XXBX. 
 The ek-tm4c123gxl has been tested to work well with XXBX and has a large enough memory 
 to work with a decent variety of algorithms. The device specifications are shown in Table I.
+%FIXME: As plan till August include the 
+% * pqm4 platform and
+% * TI MSP-EXP432P401R  (256KB Flash, 64KB SRAM)
+% * TI MSP-EXP432P4111  ( 2MB Flash, 256kB SRAM)
 
-\section{Algorithm Candidates}
+\subsection{Algorithm Candidates}
+%FIXME: this section needs more text, at least a classification of the algorithms
+% and a table listing them and their parameters, e.g. your Table IV with 
+% additional columns. Put all tables in LibreOffice, I'll convert them to LaTeX
 
 The candidates were split into their respective security levels defined by NIST. 
 Table II defines the levels of classification.
@@ -313,6 +354,10 @@ technically apply.
 \subsection{XXBX Constraint}
 The XBS network connection to the XBH will timeout during very long calculations on 
 the XBD device. This will typically happen around 40 minutes or so.
+%FIXME: This is to small for its own section. But a section on what we observed 
+%during the tests might be good and can include other observations including more
+%reasons on why certain algorithms won't run. Actually, it should also be 
+%merged with the next section.
 
 \subsection{Target Device Signature Constraint}
 The target device has available 32 kB of RAM. Most of the post-quantum signature 
@@ -324,6 +369,12 @@ XBD-Standalone module but fails with the XBD application overhead.
 
 There are four categories of results: ROM usage, RAM usage, speed (in clock cycles), 
 and energy consumption.
+%FIXME: After running Round 2 from pqm4 we need to generate a comprehensive result
+%table and graphs. Please to all of this in LibreOffice, I'll convert and extract them.
+
+%FIXME: What is most important here is a discussion and analysis of the results. That 
+% is currently completely missing. E.G why are the three bears so slow, etc.
+% Don't save that for the conclusion.
 
 \section{Conclusion}
 
