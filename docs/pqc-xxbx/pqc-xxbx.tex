@@ -34,45 +34,61 @@ Grant no. 70NANB18H219}%
 \maketitle
 
 \begin{abstract}
-The eXtended eXternal Benchmarking eXtension (XXBX), developed by John Pham and Dr. Kaps 
-of George Mason University, is a tool that can measure the performance of cryptographic 
-algorithms on a variety of microcontrollers. XXBX is currently a useful tool for measuring 
-hashing algorithms and authenticated ciphers. It is possible to extend the functionally to 
-include benchmarking key encapsulation methods and signature schemes. With this functionality 
-XXBX makes for a useful to measure the feasibility and performance of quantum-resistant 
-cryptography in embedded applications.
+The eXtended eXternal Benchmarking eXtension (XXBX), which was originally developed
+to support the Competition for Authenticated Encryption: Security, Applicability, 
+and Robustness (CAESAR), is a tool that can measure the performance of cryptographic 
+algorithms on a variety of microcontrollers. We expanded XXBX from supporting 
+hashing algorithms and authenticated ciphers to include benchmarking of key encapsulation 
+methods and signature schemes in order to support the NIST Post-Quantum
+Cryptography (PQC) standardization process. 
+This paper describes the changes to XXBX which were necessary to support PQC and 
+presents the first results we obtained for a variety of PQC candidates.
+This is a work in progress and more PQC algorithms will be benchmarked as 
+microcontroller friendly implementations are becoming available.
 \end{abstract}
 
-\keywords{XXBX, ARM, IoT, Quantum, Cryptography}
+%\keywords{XXBX, ARM, IoT, Quantum, Cryptography}
 
 \section{Introduction}
 
 With quantum computers developing at an increasing rate, it is important to take into 
 consideration the security implications that may come along with the technological progress. 
 Quantum algorithms will make possible breaking many of the encryptions and algorithms used for 
-key sharing in a reasonable amount of time [1]. An effort to preemptively design and implement 
+key sharing in a reasonable amount of time~\cite{tobefound}.
+%FIXME we need a better reference than Wikipedia. Didn't NSA make a statement?
+An effort to preemptively design and implement 
 quantum resistant security is vital to maintain proper security standards.
 
 There are many algorithms and key sharing protocols proven to be quantum resistant that have 
 already been developed. However, libraries that implement such algorithms focus on x86 
 architecture and benchmarking. Embedded devices and the Internet of Things (IoT) lack extensive 
 development. In 2018, IoT devices connected to the Internet numbered close to 23.14 billion. 
-By 2025, that number is predicted to be closer to 75.44 billion [2]. Such a large subset of Internet 
+By 2025, that number is predicted to be closer to 75.44 billion~\cite{tobefound}.
+%FIXME also here we need something more tangible as reference. 
+Such a large subset of Internet 
 connected devices cannot be left behind during the rise of quantum computing.
 
-Two such libraries implementing quantum resistant cryptography are known as libpqcrypto and the 
-Open Quantum Safe Project (liboqs) [3] [4]. These libraries, however, target x86 and x86\_64 based 
-architectures specifically. There are little efforts keeping IoT devices up-to-date [5].
+Two such libraries implementing quantum resistant cryptography are known as libpqcrypto~\cite{libpqcrypto} 
+and the Open Quantum Safe Project (liboqs)~\cite{openquantumsave}. These libraries, however, target 
+x86 and x86\_64 based architectures specifically. There are few efforts keeping IoT devices 
+up-to-date~\cite{MALINA2018462}.
 
 Embedded devices each come with their own strict memory and power constraints making the 
 implementation of such instruction-heavy algorithms a very complicated effort. One such 
-cryptographic library exists for ARM Cortex-M4 architectures known as pqm4 [6]. 
+cryptographic library exists for ARM Cortex-M4 architectures known as pqm4~\cite{PQM4}. 
 However, even this library overlooks some of the memory constraints of many devices. 
 There exist tools to help the development, testing, and benchmarking on these specific 
-environments—for example, eXtended eXternal Benchmarking eXtension (XXBX) which extends 
-XBX and SUPERCOP [7] [8] [9].  Since quantum computing is developing at an increased rate, 
+environments—for example, eXtended eXternal Benchmarking eXtension (XXBX)~\cite{PK15,Kap16} which extends 
+XBX~\cite{xbx} and SUPERCOP~\cite{SUP06}.  Since quantum computing is developing at an increased rate, 
 it is vital for tools, such as XXBX, to keep up-to-date with the 
 new emerging cryptographic standards.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=1.0]{../figures/xxbx-tilted}
+    \caption{XXBX Setup}
+    \label{fig:xxbx_setup}
+\end{figure}
 
 \section{Background (XXBX Design)}
 
@@ -80,14 +96,21 @@ XXBX can be broken into four parts: eXternal Benchmarking Software (XBS), eXtern
 Benchmarking Harness (XBH), eXternal Benchmarking Power (XBP), and 
 eXternal Benchmarking Device (XBD). The XBS is the software used to interact with the XBH. 
 The XBH acts as the control center and interface between the XBH and XBD. The XBP regulates 
-the power and current going to the XBD. The XBD is the target device being benchmarked [10].
+the power and current going to the XBD. The XBD is the target device being benchmarked~\cite{xxbx}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{../figures/xxbx_block.pdf}
+    \caption{Block Diagram of XXBX Components}
+    \label{fig:xxbx_block}
+\end{figure}
 
 \subsection{Flow}
 The XBS will compile the benchmarking test cases and upload them via TCP to the XBH. 
 The XBH will forward the test cases to the XBD via I2C and send a ``start execution'' signal. 
 The XBD will execute the uploaded benchmarking test cases and return the results. 
 Along with the results, the XBD will send back the clock cycles taken to execute the 
-benchmark as well as the total stack usage [7].
+benchmark as well as the total stack usage.
 
 During the execution, the XBH measures the power usage at regular intervals by taking 
 samples from the XBP. After the execution is complete, the XBH will gather the power 
@@ -95,7 +118,15 @@ usage and results sent back from the XBD, package them, and send them back to th
 for analysis [10].
 
 The XBS will take these results and check for success. If successful, the results are 
-uploaded to a database for further analysis [10]. Fig. 1 depicts the flow of execution.
+uploaded to a database for further analysis. Figure~\ref{fig:xxbx_flow} depicts the flow of execution.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{../figures/xxbx_flow.pdf}
+    \caption{XXBX Execution Flow}
+    \label{fig:xxbx_flow}
+\end{figure}
+
 
 \subsection{XBD Bootloader}
 The XBD needs to be loaded with a small bootloader that is able to receive commands 
@@ -121,7 +152,7 @@ A wrapper that the XBD bootloader understands connects the application and bootl
 To provide general support for all cryptographic operations, there only exists two buffers 
 for execution of tests: parameter buffer and result buffer. The sizes of these buffers 
 are decided at compilation and are unique to the cryptographic algorithm. It is up to the 
-wrapper to compute the correct addresses of the parameters and results [10].
+wrapper to compute the correct addresses of the parameters and results.
 
 \subsection{XBS}
 The XBS comprises of a collection of Python scripts. These scripts complete three main 
@@ -149,7 +180,7 @@ test is essentially a test of sanity. It tests the algorithm for correctness and
 it follows the expected behavior of the chosen cryptographic operation. Afterwards, the 
 benchmarking is performed. The number of unique tests executed is equal to the number of 
 parameter sets specified. The configuration can specify the number of trials to run per 
-parameter set [10].
+parameter set.
 
 \subsection{XBH}
 The XBH application controls the execution and behavior of the XBD. It receives commands 
@@ -162,7 +193,7 @@ algorithm. When the start execution signal is received from the XBD, the XBH wil
 the execution and gather power usage statistics. This stops when the XBD sends the 
 execution ended signal. At which point, the XBH will translate the time taken to clock cycles 
 on the XBD. It then asks for the results and stack usage from the XBD.
-This all gets packaged and returned to the XBS for analysis [10].
+This all gets packaged and returned to the XBS for analysis.
 
 \section{KEMs and Signature Schemes}
 
@@ -208,6 +239,13 @@ pointer to its location along with the message are passed while the signature is
 Lastly, for opening/verifying, the public key is written to ROM and a pointer to its location 
 and signature are provided while the results include the verified message.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{../figures/xxbx_pk.pdf}
+    \caption{XXBX Public Key Process}
+    \label{fig:xxbx_pk}
+\end{figure}
+
 \subsection{XBD Extension}
 XBD needs to translate the Start Application Request instruction to the intended operation. 
 In order to do so, the data or parameters received by the XBS must match a format expected 
@@ -217,7 +255,7 @@ Prior to unpacking the parameters, the XBD has no idea which mode is being perfo
 Because of which, the same buffer sizes are allocated regardless of the mode of operation. 
 Therefore, the ROM usage calculated during execution do not accurately reflect the differences 
 between modes and should be considered a general size for the algorithm. 
-The size of the buffers are the largest required of the different modes of operation [10].
+The size of the buffers are the largest required of the different modes of operation.
 
 Regardless of success, the length of the returned results does not differ. 
 This is particularly useful for ensuring incorrect decapsulation and detecting signature 
@@ -250,13 +288,13 @@ standards. The algorithms analyzed are many of the candidates submitted to NIST 
 analysis [10].
 
 SUPERCOP has a repository of KEM and Signature implementation that fix the XBX structure. 
-This repository has many of the candidates for the new post-quantum standard [8]. 
+This repository has many of the candidates for the new post-quantum standard. 
 However, some of these algorithms are not capable of being built in embedded 
 environments—particularly because of operating system calls.
 
 Some additional implementations were pulled from pqm4 to replace those in SUPERCOP. 
 Pqm4 has included some libraries and implementations of common dependencies required by 
-a lot of these algorithms that work with the Cortex-M4 architecture [6]. Pqm4 focused on 
+a lot of these algorithms that work with the Cortex-M4 architecture~\cite{PQM4}. Pqm4 focused on 
 Level III algorithms, so some work was required to fit Level I and Level V versions. 
 
 \section{Target Device}
@@ -268,7 +306,7 @@ to work with a decent variety of algorithms. The device specifications are shown
 \section{Algorithm Candidates}
 
 The candidates were split into their respective security levels defined by NIST. 
-Table II defines the levels of classification [10].
+Table II defines the levels of classification.
 For KEM algorithms, only levels I, III, and V apply. For signature schemes, all levels 
 technically apply.
 
