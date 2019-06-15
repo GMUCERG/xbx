@@ -1,0 +1,60 @@
+Brian Hession (bhession@gmu.edu)
+
+Problems I have run into with XXBX and their solutions.
+
+* Duplicate key in SQL DB
+	- Delete data.db and recompile
+* Sometimes it is also necessary to delete the xbs_xbd/work/<target> folder. The compile script will
+  not clean prior (and should not but sometimes there are problems that only a clean can fix).
+* VFP linking errors during compilation
+	- Change -mfloat-abi compile flag from hard to softfp. The libc library does not support hard
+	  float by default. Softfp is preferred to soft since softfp will still use a hard float
+	  implementation but wrapped in a soft float function call.
+* OpenOCD may have to be run as root
+* Errors with bootloader compilation, config, etc.
+	- Ensure that all submodules are at the master branch. When the git repo was made, the tags of the
+	  submodules never changed
+	- I would consider changing this submodule model in the future--or at least run a script when
+	  pushing changes to update the submodule tag in the xbx root repo
+* NOTE: Some of the tools are outdated/not used anymore
+	- tiva_c compiler tools are unnecessary. Use arm-none-eabi instead (from CCS8+ is best)
+	- I rewrote setup.sh to update the current setup process as well as update most of the submodules
+
+Helpful stuff.
+
+* The IP for XBH can be configured in xbh/xbh_config.h
+* Flashing steps (both XBH and XBD_BL)
+	Terminal 1:
+	- sudo openocd -f /path/to/board/script
+	Terminal 2:
+	- arm-none-eabi-gdb .gdbinit
+		+ .gdbinit contents:
+			target extended-remote :3333
+			file <AXF-File>
+			load
+* crypto_* wrappers for XBD application code is in xbs_xbd/embedded/xbd/xbd_op
+* crypto_* XBS services are in xbs_xbd/python/xbx/run{,_op}.py
+* Makefiles for XBD are in xbs_xbd/python/xbx/buildfiles.py
+	- These get generated and put into xbs_xbd/work
+* crypto_*.h gets generated during the compilation process and can be found in xbs_xbd/work after
+  building
+* You can debug the XBD in gdb while running XXBX--this saved me quite a few times.
+* You can increase debugging levels with compiler switches in XBH/XBD
+	- For XBH: look in the Makefile for -DDEBUG* lines
+	- For XBD: look at xbs_xbd/platforms/ek-tm4c123gxl/c_compilers and the Makefile in 
+	  bootloader/makefiles for more information
+
+KEM- and Signature-specific stuff.
+
+* genkey-make.sh will compile the code in algobase for x86 and then generate N number of keys.
+	- The algorithms can be configured in the shell script
+	- N can be configured in the shell script
+	- The keys are stored in xbdkeys
+	- libcrypto and libb64 libraries are required
+* If electing to generate keys on the XBD instead, the code in xbs_xbd/python/xbx/run_op.py must be
+  uncommented (and the temporary key-reading code removed)
+* Checksums do not validate correctly. The returned hashes do not seem to match the expected. However,
+  the algorithms do perform logically correct.
+	- Most of this is due to limited ROM and will need some tinkering or hacky memory tricks to get
+	  get it to work properly. More research/debugging is needed though
+

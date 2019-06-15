@@ -1,0 +1,37 @@
+WORKING
+=======
+*bear
+hila5
+kyber*
+ledakem*
+newhope*
+ntruhrss701
+
+NOT WORKING
+===========
+bigquake*      (Too many *allocs)
+bike*          (OpenSSL dependencies I can't figure out)
+dags           (Too many *allocs)
+edonk*         (malloc)
+frodokem       (OpenSSL dependencies--what is AES schedule?)
+kindi*         (Too many *allocs)
+lac*           (Too many *allocs)
+lake*          (Only 1 alloc but requires GF2X(?))
+lima*          (Need to find replacement for Keccak/SHA3)
+*saber         (unsure of the mutability/lifecycle the malloc)
+locker*        (malloc plus unusual OpenSSL imports--look into later)
+lotus*         (OpenSSL EVP? Problaby for RNG but used in an unusual way)
+mceliece*      (Need to find replacement for Keccak/SHA3)
+mersenne*      (OpenSSL dependencies EVP/sha/etc)
+ntrukem*       (Unknown *alloc sizes)
+ntrulpr4591761 (Unstable crypto_int*/crypto_stream dependencies)
+ntskem*        (Too many *allocs)
+oddmanhattan*  (OpenSSL EVP again)
+pqrsa15        (Keccak replacement and malloc)
+ramstakers*    (malloc dependecies)
+remblem*       (Unstable crypto_stream dependency)
+rsa2048        (No reference implementation--also not PQ)
+sike*          (GMP--multiprecision dependency)
+sntrup4591761  (Unstable crypto_int*/crypto_stream dependencies)
+titanium*      (Keccak replacement)
+

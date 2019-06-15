@@ -1,0 +1,9 @@
+WORKING
+=======
+dilithium*
+qtesla*
+
+NOT WORKING
+===========
+picnic* (Too many *allocs)
+
