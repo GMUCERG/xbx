@@ -191,16 +191,43 @@ communication and execution signaling, as well as stack measurement.
 \chapter{First Steps}
 % -----------------------------------------------------------------------------
   \section{Requirements}
+  XXBX was tested on Kubuntu 18.04 and should also run on other Linux distributions.
+  No attempts have been made to run it on a Windows or MAC based system.
+
+  The following additional packets have to be installed on a plain Kubuntu 18.04 installation:
+  \begin{itemize}
+    \item git
+    \item make
+    \item openocd
+    \item gtkterm or minicom
+    \item build-essential
+    \item libb64-dev
+    \item libssl-dev
+    \item python3-pip
+    \item python3-sqlalchemy
+  \end{itemize}
+
   \section{Installation}
     \subsection{Software Installation}
 
+    XXBX is currently distributed only via \texttt{git}. In order to install XXBX on 
+    your computer you have to clone its git repository using the following command:
+    \verb|git clone https://github.com/GMUCERG/xbx.git|.
+    Then its submodules have to be initialized using:
+    \verb|git submodule init| and each submodule has to be downloaded updated to the linked
+    version using: 
+    \verb|git submodule update --init --recursive|.
+    As the linked versions might not be the latest, please update the submodules in 
+    the \verb|xbh| and the \verb|xbs_xbd| directories using 
+    \verb|git checkout master| to the latest version. 
 
-
-     \verb|git checkout master|
-     in \verb|xbs_xbd| and \verb|xbh| directories to update the corresponding
-     subrepositories.
+    This already concludes the software installation of XXBX. 
+    What follows are the installation instructions to get the XXBX system up and 
+    running. 
 
     \subsection{XBH}
+The next step is to configure, compile and install the firmware for the XBH.
+%
 The XBS connects to the XBH via Ethernet. The TCP/IP parameters can be set
 in the file \verb|xbx/xbh/xbh_config.h|. All IP addresses are to be specified
 in hexadecimal. An example is shown below.
@@ -217,7 +244,7 @@ in hexadecimal. An example is shown below.
 \end{cergbox}
 
 The XBS will try to connect to the XBH by name "xbh". Hence, the name "xbh" has to 
-be mapped to the correct IP address. You can edit your \verb|\etc\hosts| file
+be mapped to the correct IP address. You can edit your \verb|/etc/hosts| file
 and add the following line.
 
 \begin{center}
@@ -226,6 +253,11 @@ and add the following line.
 
 After you have made settings appropriate to your network, you have to compile
 the XBH code. This requires that a GCC ARM compiler is installed on your system.
+The ARM GCC executable is typically called \texttt{arm-none-eabi-gcc}. We cannot 
+recommend installation of the ARM GCC that is supplied with Ubuntu as it is several 
+versions behind.
+
+\paragraph{Option 1:}
 One option is to install \emph{Code Composer Studio (CCS)} from \emph{Texas Instruments}
 which can be found at \url{http://www.ti.com/tool/CCSTUDIO}. After installation
 start CCS as \textbf{root} to install all updates and make sure that 
@@ -233,10 +265,22 @@ start CCS as \textbf{root} to install all updates and make sure that
 of the ARM GCC to your \emph{PATH} environment variable of your shell. The text 
 \texttt{VERSION} in the example below has to be replaced with the version installed
 on your system. 
-The ARM GCC executable is typically called \texttt{arm-none-eabi-gcc}.
 
 \begin{center}
-\lstinline|export PATH=/opt/ti/ccsv8/tools/compiler/gcc-arm-none-eabi-VERSION/bin/:$PATH| 
+\lstinline|export PATH=$PATH:/opt/ti/ccsv9/tools/compiler/gcc-arm-none-eabi-VERSION/bin/| 
+\end{center}
+
+\paragraph{Option 2:}
+The latest ARM GCC can be obtained directly from arm (\url{https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads}). Download the tarball and move it to 
+the \verb|/opt| directory. Then as \textbf{root} issue the untar command
+\verb|tar xjf gcc-arm-none-eabi-*-yyyymmdd-linux.tar.bz2|. The tarball can now be 
+removed.  Then add the location
+of the ARM GCC to your \emph{PATH} environment variable of your shell. The text 
+\texttt{VERSION} in the example below has to be replaced with the version installed
+on your system. 
+
+\begin{center}
+\lstinline|export PATH=$PATH:/opt/gcc-arm-none-eabi-VERSION/bin/| 
 \end{center}
 
 Now enter the \verb|xbx/xbh| directory and build the XBH executable by typing 
@@ -268,7 +312,7 @@ udevadm control -R
 \end{lstlisting}
 
 Now the system is ready to program the XBH. Connect the XBH with a USB cable plugged into
-the USB port labled \emph{DEBUG} on the XBH. Start the debugger \verb|arm-tiva_c-eabi-gdb|
+the USB port labled \emph{DEBUG} on the XBH. Start the debugger \verb|arm-none-eabi-gdb|
 and issue the following commands in the debugger shell.
 
 \begin{lstlisting}
@@ -277,24 +321,45 @@ load
 c
 \end{lstlisting}
 
-Start a terminal program (for example \emph{minicom} 
-and point it to your XBH. The XBH typically uses \verb|/dev/ttyACM0|.
-You can verify this with the output of the \texttt{dmesg} command. Connect the XBH to the
+Start a terminal program, for example \emph{minicom} or \emph{gtkterm}, 
+and point it to your XBH. The XBH typically uses the device \verb|/dev/ttyACM0| at 115,200 baud, no parity, 
+one stop bit, and no flow control.
+You can verify the device with the output of the \texttt{dmesg} command. Connect the XBH to the
 Ethernet and press the \emph{Reset} button on the XBH. It should print its main 
-settings into the terminal. Now your XBH is ready.
+settings into the terminal. Try to ping the xbh from your computer to make sure that your 
+network setup is correct. Now your XBH is ready.
 
 \subsection{XBD}
-Example ek-tm4c123gxl
+Each XBD runs a bootloader program that has to be compiled. The sources for each XBD
+are in XBD specific directories in 
+\verb|xbx/xbs_xbd/platforms|.
+Change into the platform directory that matches your XBD and then into 
+\texttt{bootloader/makefiles}. For the \verb|ek-tm4c123gxl_16mhz| the full path is
+\verb|xbx/xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles|.
+Make sure that the compiler for your XBD is in your \emph{PATH} environment
+variable and that it matches the compiler expected in the \texttt{Makefile}.
+Then you are ready to compile the bootloader by typing
 
-same C-compiler as used for XBH
-go to 
-\verb|xbx/xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles|
-type make
+\begin{lstlisting}
+make clean
+make
+\end{lstlisting}
+% Move to XBD user guide
+%Inside the platform directory , e.g. \verb|ek-tm4c123gxl_16mhz| is a file called 
+%\texttt{settings.ini} which contains the platform specific settings including the memory map. 
 
-make sure only the XBD is connected to your computer and the xbh is not.
+%Example ek-tm4c123gxl
+%
+%same C-compiler as used for XBH
+%go to 
+%\verb|xbx/xbs_xbd/platforms/ek-tm4c123gxl_16mhz/bootloader/makefiles|
+%type make
 
-start
-arm-none-eabi-gdb
+Now the XBD has to be programmed. Connect only the XBD to your computer.
+Make sure that the XBH is not connected to your computer and that the XBD is not
+connected to the XBP or XBH. Then start the debugger for your XBD
+For the \verb|ek-tm4c123gxl_16mhz| the debugger can be \texttt{arm-none-eabi-gdb}.
+In your gdb run the following commands to program the XBD.
 
 \begin{lstlisting}
 source .gdbinit
@@ -302,9 +367,27 @@ load
 c
 \end{lstlisting}
 
-done
+Now, follow the section corresponding section of the XBD User Guide for your particular board
+in order to connect the XBD to the XBP.
+
+  \subsection{XBP}
+Info on how to wire up the XBP.
 
   \section{Example Run}
+Import algorithm packages from SUPERCOP.
+
+\begin{lstlisting}
+./import_algopack ../SUPERCOP
+./make-genkey.sh %for PQC
+\end{lstlisting}
+Edit config.ini
+select platform
+select operation
+select algorithm(s)
+
+\verb|./compile.py|
+\verb|./execute.py|
+
 Prior to running any scripts, the XBD is initialized by compiling the
 platform-specific bootloader and flashing it normally (i.e. using a programming
 cable). 
