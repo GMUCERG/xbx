@@ -29,7 +29,8 @@
 
 \author{Brian Hession \and Jens-Peter Kaps}
 
-\date{ECE Department, George Mason University, Fairfax, VA 22030, U.S.A.\\
+\date{Cryptographic Engineering Research Group -- CERG\\
+ECE Department, George Mason University, Fairfax, VA 22030, U.S.A.\\
 %\email{\{bhession jkaps\\
 \url{http://cryptography.gmu.edu}}%
 %}
@@ -396,11 +397,11 @@ their respective security levels defined by NIST~\cite{pqccfp}.
 \begin{table}[ht]
   \centering
   \caption{KEMs than run on XXBX, their key sizes in bytes, and the implementation we ran\\
-     {(\small m4v2 -- pqm4 library, round 2 algorithm, ref -- reference implementation,
+     {(\small m4v2 -- pqm4 library round 2 algorithm, ref -- reference implementation,
       xbdref -- modified reference implementation to make it compile on microcontroller)}}\label{tab:sizeskem}
     \begin{tabular}{ll|c|c|rrrr}
                    & \textbf{Implemen-} & \textbf{Security} &             & \textbf{Public} & \textbf{Secret} & \textbf{Session} & \\ 
-\textbf{Algorithm} & \textbf{tation}    &\textbf{Level} & \textbf{Type} & \textbf{Key} & \textbf{Key} & \textbf{Key} & \textbf{Ciphertext} \\ \hline
+\textbf{Algorithm} & \thbr{tation}    &\textbf{Level} & \textbf{Type} & \thb{Key} & \thb{Key} & \thb{Key} & \textbf{Ciphertext} \\ \hline
 babybear	& xbdref & 2	         & Lattice &  804       &   40       & 32          &  917 \\
 kyber512	& m4v2   & 1	         & Lattice &  736       & 1632       & 32          &  800 \\
 lightsaber	& m4v2   & 1	         & Lattice &  672       & 1568       & 32          &  736 \\
@@ -444,6 +445,21 @@ could not be benchmarked.
 
 \section{Results}
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.8]{./figures/rom.pdf}
+    \caption{ROM Usage}
+    \label{fig:rom}
+\end{figure}
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.8]{./figures/ram.pdf}
+    \caption{RAM Usage Based on Stack Usage}
+    \label{fig:ram}
+\end{figure}
+
 XXBX allows us to benchmark the algorithms with respect to ROM usage, RAM usage,
 speed (in clock cycles), and energy consumption. 
 There are four categories of results: ROM usage, RAM usage, speed (in clock cycles), 
@@ -459,26 +475,13 @@ more RAM, however there are some notable exceptions. Papabear, and both newhopes
 less RAM for their key sizes than others.
 
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[scale=0.8]{./figures/rom.pdf}
-    \caption{ROM Usage}
-    \label{fig:rom}
-\end{figure}
-
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[scale=0.8]{./figures/ram.pdf}
-    \caption{RAM Usage Based on Stack Usage}
-    \label{fig:ram}
-\end{figure}
 
 The number or clock cycles required varies widely from algorithm to algorithm. The
 only way to show differences between faster algorithms is by using a logarithmic scale
-as can be seen in Fig.\,\ref{fig:clock}. Sikep530 is the slowest by orders of magnitude. It
-one single encapsulation takes more than 10 minutes, hence its bars leave the graph.
-Also the three bears are slow. In both cases we used the non optimized reference 
+as can be seen in Fig.\,\ref{fig:clock}. Sikep530 is the slowest by orders of magnitude. 
+One single encapsulation takes more than 7 minutes, hence its bars leave the graph.
+Also the three bears are slower than the other algorithms we tested, 
+but they are still reasonably fast. In both cases we used the non optimized reference 
 implementations. The bears seem to take the most time during the noise calculations,
 in particular the \texttt{mac()} function--multiply and accumulate.
 
@@ -520,7 +523,7 @@ for KEM algorithms. However, if memory usage is of greatest concern, the Kyber a
 are best suited.
 
 Sike takes an incredible amount of time to execute and is not a viable implementation for 
-embedded environments. Sikep503 takes more than 10 minutes while Sikep751 takes almost 40 minutes on the ARM Cortex M4F. 
+embedded environments. Sikep503 takes more than 7 minutes while Sikep751 takes almost 40 minutes on the ARM Cortex M4F. 
 Many PQC candidates could not be run on these microcontrollers as their key sizes exceed the
 available RAM of only 32kByte.
 
