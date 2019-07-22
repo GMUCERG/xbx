@@ -47,7 +47,8 @@ Cryptography (PQC) standardization process.
 This paper describes the changes to XXBX which were necessary to support PQC and 
 presents the first results we obtained for a variety of PQC candidates.
 This is a work in progress and more PQC algorithms will be benchmarked as 
-microcontroller friendly implementations are becoming available.
+microcontroller friendly implementations are becoming available and as we are 
+expanding our portfolio of supported microcontrollers.
 \end{abstract}
 
 %\keywords{XXBX, ARM, IoT, Quantum, Cryptography}
@@ -81,7 +82,7 @@ implementation of such instruction-heavy algorithms a very complicated effort. O
 cryptographic library exists for ARM Cortex-M4 architectures known as pqm4~\cite{PQM4}. 
 However, even this library overlooks some of the memory constraints of many devices. 
 There exist tools to help the development, testing, and benchmarking on these specific 
-environments—for example, eXtended eXternal Benchmarking eXtension (XXBX)~\cite{PK15,Kap16}
+environments--for example, eXtended eXternal Benchmarking eXtension (XXBX)~\cite{PK15,Kap16}
 (shown in Fig.\,\ref{fig:xxbx_setup}) which extends 
 XBX~\cite{xbx} and SUPERCOP~\cite{SUP06}.  Since quantum computing is developing at an increased rate, 
 it is vital for tools, such as XXBX, to keep up-to-date with the 
@@ -119,7 +120,7 @@ The XBS cross compiles the cryptographic algorithms that are to be benchmarked
 using a host of different compiler and linker options to ``test applications'' for the 
 microcontroller on the selected XBD. 
 Then the benchmarking is performed using the benchmarking flow depicted in Figure~\ref{fig:xxbx_flow}. 
-The operations of \emph{Ecrypt}, \emph{Decrypt}, and \emph{Forged Decryption} are based on 
+The operations of \emph{Encrypt Plaintext}, \emph{Decrypt Ciphertext}, and \emph{Forged Decryption} are based on 
 requirements for benchmarking Authenticated Encryption with Associated Data (AEAD) algorithms.
 It starts by initiating a 
 timing calibration of the XBH to make sure it can accurately convert the elapsed execution time
@@ -210,7 +211,7 @@ parameter set.
 
 \subsection{XBH}
 The XBH application controls the execution and behavior of the XBD. It receives commands 
-from the XBS and translates and performs the specified actions on the XBD.
+from the XBS, translates them, and performs the specified actions on the XBD.
 
 The device which the XBH code runs on must have a frequency equal to or greater than the 
 device being benchmarked for correct results. Timing calibration is needed between the XBH 
@@ -224,7 +225,7 @@ This all gets packaged and returned to the XBS for analysis.
 \section{Adding Support for KEMs and Signature Schemes to XXBX}
 
 For XXBX to be useful for benchmarking quantum-resistant cryptography, the functionality 
-must be extended to include key encapsulation methods and signature schemes. This 
+had to be extended to include key encapsulation methods and signature schemes. This 
 functionality is required in two separate parts of XXBX: XBS and XBD.
 
 \subsection{Changes to the XBS}\label{sec:rom}
@@ -240,7 +241,7 @@ Each trial for KEMs run each of the modes of operation in the following order: k
 encapsulation, decapsulation, decapsulation failure. For signature schemes, the order is 
 similar: key generation, signing, opening/verifying, forgery detection. The next mode of 
 operation depends on the results of the previous mode. Therefore it is important each mode 
-returns successfully or the trial is cut short, deemed a failure, and continues on to the 
+returns successfully or the trial is cut short, deemed a failure, and XXBX continues on to the 
 next trial.
 
 The parameters to package differ based on the mode of operation. And because there are 
@@ -284,7 +285,7 @@ by the XBD. In turn, the results of the test must be packaged in a format the XB
 
 Prior to unpacking the parameters, the XBD has no idea which mode is being performed. 
 Because of which, the same buffer sizes are allocated regardless of the mode of operation. 
-Therefore, the ROM usage calculated during execution do not accurately reflect the differences 
+Therefore, the ROM usage calculated during execution does not accurately reflect the differences 
 between modes and should be considered a general size for the algorithm. 
 The size of the buffers are the largest required of the different modes of operation.
 
@@ -329,15 +330,18 @@ The EK-TM4C123GXL board was chosen to benchmark the PQC algorithms using XXBX.
 It is currently the best supported ARM Cortex M4F based board by XXBX and represents a 
 rather typical amount of memory, large enough to 
 work with a decent variety of algorithms. 
-Before August, we plan to benchmark the PQC algorithms also on the MSP-EXP432P401R 
-which has double the amount of RAM and an ultra-low power ARM core and the
+
+We are in the process of getting the EK-TM4C129EXL which has 4 times the amount of
+ROM and 8 times the amount of RAM as the EK-TM4C123GXL fully supported and will soon
+have a full set of results for this board. 
+The next board we will include in XXBX will be the 
 STM32F407G-DISC which is the board used by pqm4~\cite{PQM4}.
 The amount of memory on the microcontroller is one limiting factor in benchmarking
 PQC algorithms. In order to expand the amount of PQC algorithms that can be 
 benchmarked we are also planning to support the MSP-EXP432P4111 board which has 
 the most memory of all platforms shown in table~\ref{tab:XBDs}.
 
-\begin{table}[ht]
+\begin{table}[ht]\setlength{\tabcolsep}{3pt}
   \caption{Currently Supported XBDs, {\color{blue}XBD used in this paper}, and {\color{purple}XBDs planned for future support}}\label{tab:XBDs}
     \begin{tabular}{l|c|ll|rrc|rr|r}
     \textbf{Board}   & \textbf{Manuf.}&\textbf{CPU}&\textbf{ISA}&\textbf{Bus}&\thb{f}&\textbf{HW}&\textbf{ROM}&\textbf{RAM} \\ \hline
@@ -347,7 +351,7 @@ the most memory of all platforms shown in table~\ref{tab:XBDs}.
     MSP-EXP432P401R  & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit &  48\,MHz & AES &  256kB &  64kB  \\
     \color{purple}MSP-EXP432P4111  & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit &  48\,MHz & AES & 2048kB & 256kB  \\
     \color{blue}EK-TM4C123GXL    & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit &  80\,MHz &     &  256kB &  32kB  \\ 
-    EK-TM4C129EXL    & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit & 120\,MHz & AES & 1024kB & 256kB  \\ 
+    \color{purple}EK-TM4C129EXL    & TI        & ARM Cortex M4F &  ARMv7E-M   & 32-bit & 120\,MHz & AES & 1024kB & 256kB  \\ 
     NUCLEO-F091RC    & STM       & ARM Cortex M0  &  ARMv6-M    & 32-bit &  48\,MHz &     &  256kB &  32kB  \\
     NUCLEO-F103RB    & STM       & ARM Cortex M3  &  ARMv7-M    & 32-bit &  72\,MHz &     &  128kB &  20kB  \\
     \color{purple}STM32F407G-DISC1 & STM       & ARM Cortex M4F &  ARMv7E-M   & 32-bit & 168\,MHz &     & 1024kB & 192kB  \\
@@ -371,9 +375,10 @@ libraries such as openssl.
 
 Some additional implementations were pulled from pqm4 to replace those in SUPERCOP. 
 Pqm4 has included some libraries and implementations of common dependencies required by 
-a lot of these algorithms that work with the Cortex-M4 architecture~\cite{PQM4}. Pqm4 focused on 
-Level III algorithms, so some work was required to fit Level I and Level V versions. 
-At the time of benchmarking, pqm4 contained only round 1 versions of the algorithms.
+a lot of these algorithms that work with the Cortex-M4 architecture~\cite{PQM4}. 
+%Pqm4 focused on 
+%Level III algorithms, so some work was required to fit Level I and Level V versions. 
+Recently, pqm4 released round 2 versions of the algorithms they support.
 
 %FIXME: This section requires a little bit of work clarifying what we actually tested
 % and including what we want to test by August. First and foremost, can you benchmark
@@ -390,23 +395,29 @@ their respective security levels defined by NIST~\cite{pqccfp}.
 
 \begin{table}[ht]
   \centering
-  \caption{KEMs than run on XXBX and their key sizes in bytes}\label{tab:sizeskem}
-    \begin{tabular}{l|c|c|rrrr}
-                   & \textbf{Security} &             & \textbf{Public} & \textbf{Secret} & \textbf{Session} & \\ 
-\textbf{Algorithm} & \textbf{Level} & \textbf{Type} & \textbf{Key} & \textbf{Key} & \textbf{Key} & \textbf{Ciphertext} \\ \hline
-babybear	& 2	         & Lattice &  804       &   40       & 32          &  917 \\
-kyber512	& 1	         & Lattice &  736       & 1632       & 32          &  800 \\
-lightsaber	& 1	         & Lattice &  672       & 1568       & 32          &  736 \\
-newhope512cca	& 1	         & Lattice &  928       & 1888       & 32          & 1120 \\
-ntrukem443	& 1	         & Lattice &  611       &  701       & 32          &  611 \\
-sikep503	& 1	         & Isogeny &  378       &  434       & 16          &  402 \\
-mamabear	& 4	         & Lattice & 1194       &   40       & 32          & 1307 \\
-kyber768	& 3	         & Lattice & 1088       & 2400       & 32          & 1152 \\
-saber    	& 3	         & Lattice &  992       & 2304       & 32          & 1088 \\
-papabear	& 5	         & Lattice & 1584       &   40       & 32          & 1697 \\
-kyber1024	& 5	         & Lattice & 1440       & 3168       & 32          & 1504 \\
-firesaber	& 5	         & Lattice & 1312       & 3040       & 32          & 1472 \\
-newhope1024cca	& 5	         & Lattice & 1824       & 3680       & 32          & 2208 \\
+  \caption{KEMs than run on XXBX, their key sizes in bytes, and the implementation we ran\\
+     {(\small m4v2 -- pqm4 library, round 2 algorithm, ref -- reference implementation,
+      xbdref -- modified reference implementation to make it compile on microcontroller)}}\label{tab:sizeskem}
+    \begin{tabular}{ll|c|c|rrrr}
+                   & \textbf{Implemen-} & \textbf{Security} &             & \textbf{Public} & \textbf{Secret} & \textbf{Session} & \\ 
+\textbf{Algorithm} & \textbf{tation}    &\textbf{Level} & \textbf{Type} & \textbf{Key} & \textbf{Key} & \textbf{Key} & \textbf{Ciphertext} \\ \hline
+babybear	& xbdref & 2	         & Lattice &  804       &   40       & 32          &  917 \\
+kyber512	& m4v2   & 1	         & Lattice &  736       & 1632       & 32          &  800 \\
+lightsaber	& m4v2   & 1	         & Lattice &  672       & 1568       & 32          &  736 \\
+newhope512cca	& ref    & 1	         & Lattice &  928       & 1888       & 32          & 1120 \\
+ntruhps2048509  & m4v2   & 1             & Lattice &  699       &  935       & 32          &  699 \\
+%ntrukem443	&    & 1	         & Lattice &  611       &  701       & 32          &  611 \\
+sikep503	& xbdref & 1	         & Isogeny &  378       &  434       & 16          &  402 \\
+kyber768	& m4v2   & 3	         & Lattice & 1088       & 2400       & 32          & 1152 \\
+mamabear	& xbdref & 4	         & Lattice & 1194       &   40       & 32          & 1307 \\
+ntruhps2048677  & m4v2   & 3             & Lattice &  930       & 1234       & 32          &  930 \\
+ntruhrss701     & m4v2   & 3             & Lattice & 1138       & 1450       & 32          & 1138 \\
+saber    	& m4v2   & 3	         & Lattice &  992       & 2304       & 32          & 1088 \\
+kyber1024	& m4v2   & 5	         & Lattice & 1440       & 3168       & 32          & 1504 \\
+%firesaber	&    & 5	         & Lattice & 1312       & 3040       & 32          & 1472 \\
+newhope1024cca	& m4v2   & 5	         & Lattice & 1824       & 3680       & 32          & 2208 \\
+newhope1024cpa	& m4v2   & 5	         & Lattice & 1824       & 3680       & 32          & 2208 \\
+papabear	& xbdref & 5	         & Lattice & 1584       &   40       & 32          & 1697 \\
     \end{tabular}
 \end{table}
 
@@ -465,7 +476,8 @@ less RAM for their key sizes than others.
 
 The number or clock cycles required varies widely from algorithm to algorithm. The
 only way to show differences between faster algorithms is by using a logarithmic scale
-as can be seen in Fig.\,\ref{fig:clock}. Sike is the slowest by orders of magnitude.
+as can be seen in Fig.\,\ref{fig:clock}. Sikep530 is the slowest by orders of magnitude. It
+one single encapsulation takes more than 10 minutes, hence its bars leave the graph.
 Also the three bears are slow. In both cases we used the non optimized reference 
 implementations. The bears seem to take the most time during the noise calculations,
 in particular the \texttt{mac()} function--multiply and accumulate.
@@ -478,9 +490,11 @@ in particular the \texttt{mac()} function--multiply and accumulate.
 \end{figure}
 
 Due to the very large variation in number of clock cycles required between algorithms, 
-the amount of energy consumed varies also by several order of magnitudes. However,
-the advantage in terms of clock cycles required for the sabers is even more dominant
-when it comes to energy consumption. The reason still needs to be investigated.
+the amount of energy consumed varies also by several order of magnitudes. Hence, both
+graphs are very similar.
+%However,
+%the advantage in terms of clock cycles required for the sabers is even more dominant
+%when it comes to energy consumption. The reason still needs to be investigated.
 
 \begin{figure}[ht]
     \centering
@@ -501,12 +515,15 @@ when it comes to energy consumption. The reason still needs to be investigated.
 
 For embedded environments, the strict constraints due to limited memory size and power 
 consumption makes developing IoT devices complicated. If execution time or power consumption 
-are of greatest concern, both Kyber, New Hope, and Saber implementations are good candidates 
-for KEM algorithms. However, if memory usage is of greatest concern, the Three Bears algorithm 
-works better.
+are of greatest concern, the Kyber, New Hope, Ntru, and Saber implementations are good candidates 
+for KEM algorithms. However, if memory usage is of greatest concern, the Kyber and Three Bears algorithms
+are best suited.
 
 Sike takes an incredible amount of time to execute and is not a viable implementation for 
-embedded environments.
+embedded environments. Sikep503 takes more than 10 minutes while Sikep751 takes almost 40 minutes on the ARM Cortex M4F. 
+Many PQC candidates could not be run on these microcontrollers as their key sizes exceed the
+available RAM of only 32kByte.
+
 XXBX is simple and adaptable. It will help users shift current cryptographic standards over 
 to quantum-resistant public key cryptography in embedded environments.
 
