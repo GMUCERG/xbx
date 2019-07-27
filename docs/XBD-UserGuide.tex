@@ -369,7 +369,27 @@ memory locations noncontiguous. The original XBS software did not properly take
 these into account, and would load nonadjacent blocks of code adjacently. This
 was fixed in the XBS rewrite. 
 
-  \section{TI Tiva\texttrademark~C Series TM4C123G LaunchPad}
+  \section{TI Tiva\texttrademark~C Series EK-TM4C123GXL LaunchPad}
+For accurate power measurements remove the jumper near R30 shown next to the letter B in Fig.\,\ref{fig:tm4c123-power}. 
+Then carefully cut the trace from the first pin of J1 marked with the letter A in the figure near J3 and R29.
+The trace is highlighted in light pink and the point to cut indicated with a blue line.
+Make sure to only cut the trace and not the surrounding traces (i.e. don't make a cut that is as long as
+the blue line.) Place a jumper cable from point A to point B to power the board through the 
+BoosterPack connector. The in-circuit-debugger-interface (ICDI) will not be powered. 
+The setting of the power select switch has no influence on the measurements.
+
+When programming the board using the ICDI, simply disconnect the board from the XBP and close the jumper
+near R30. The cable to Pin 1 of J1 (marked with A in the figure) has to be removed and that pin 
+will not be powered. Make sure that the power select switch is set to \emph{DEBUG}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.3]{figures/ek-tm4c123gxl-power}
+    \caption{Modifications of the EK-TM4C123GLX LauchPad for Power Measurements}\label{fig:tm4c123-power}
+  \end{center}
+\end{figure}
+
+
   \section{TI Tiva\texttrademark~C Series EK-TM4C129EXL LaunchPad}
 Remove jumper JP3 in order to power the XBD through the BoosterPack header from the XBP.
 Then connect the BoosterPack1 header to the XBP. More information on how to enable precise power measurements
